@@ -47,23 +47,25 @@ public class Link {
 		gatewayIP = "0.0.0.0";
 	}
 	
-	public Link(String n, RIQ a, RIQ b, int t, String cesInt, String subnet) {
+	public Link(String n, RIQ a, RIQ b, int t, String cesInt, int v, String subnet) {
 		name = n;
 		riqLocal = a;
 		riqDistant = b;
 		type = t;
 		interfaceCES = validateCESInterface(cesInt);
 		subnetMask = RIQ.ipValidation(subnet); //DANGEROUS!!! You have no way of validating that the valid IP is a SUBNET MASK
+		vLAN = v;
 		gatewayIP = "0.0.0.0";
 	}
 	
-	public Link(String n, RIQ a, RIQ b, int t, String cesInt, String subnet, String gIP) {
+	public Link(String n, RIQ a, RIQ b, int t, String cesInt, int v, String subnet, String gIP) {
 		name = n;
 		riqLocal = a;
 		riqDistant = b;
 		type = t;
 		interfaceCES = validateCESInterface(cesInt);
 		subnetMask = RIQ.ipValidation(subnet); //DANGEROUS!!! You have no way of validating that the valid IP is a SUBNET MASK
+		vLAN = v;
 		gatewayIP = RIQ.ipValidation(gIP);
 	}
 	

@@ -51,6 +51,7 @@ public class Main {
 				if (cesIntRemote == null) {System.out.println("Invalid interface");}
 			} while(cesIntRemote == null);
 			remote = new RIQ(name,ip,udpPort);
+			System.out.println();
 			
 			int type;			
 			do {
@@ -59,14 +60,17 @@ public class Main {
 				keyboard.nextLine(); //May be unnecessary
 				if ((type != 0) && (type != 1)) {System.out.println("Invalid Type"); type = -1;}
 			} while (type == -1);
+			System.out.print("VLAN of link: ");
+			int vlan = keyboard.nextInt();
+			keyboard.nextLine();
 			do {
 				System.out.print("Subnet Mask for link: ");
 				ip = RIQ.ipValidation(keyboard.nextLine());
 				if(ip==null) {System.out.println("Invalid IP Address");}
 			} while (ip == null);
 			
-			Link A = new Link("L to R", local, remote, type, cesIntLocal, ip, "0.0.0.0");
-			Link B = new Link("R to L", remote, local, type, cesIntRemote, ip, "0.0.0.0");
+			Link A = new Link("L to R", local, remote, type, cesIntLocal, vlan, ip, "0.0.0.0");
+			Link B = new Link("R to L", remote, local, type, cesIntRemote, vlan, ip, "0.0.0.0");
 			
 			System.out.println("\nLink for LOCAL to REMOTE\n\t"+A);
 			System.out.println("\nLink for REMOTE to LOCAL\n\t"+B);
