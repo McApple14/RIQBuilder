@@ -1,41 +1,38 @@
 import java.util.*;
-import java.util.regex.*;
 
 public class RIQ {
 	private String name;
-	private String localIP;
-	private int udpPort;
 	private ArrayList<String> clients;
 	private ArrayList<Link> links;
-	private static final Pattern PATTERN = Pattern.compile(
-			"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+	private KG175D KG1;
+	private KG175D KG2;
+	
 	
 	public RIQ() {
 		clients = new ArrayList<String>();
+		links = new ArrayList<Link>();
 	}
 	
-	public RIQ(String n, String ip, int port) {
+	public RIQ(String n) {
 		name = n;
-		localIP = ip;
-		udpPort = port;
 		clients = new ArrayList<String>();
+		links = new ArrayList<Link>();
 	}
 	
-	public static String ipValidation(String in) {
-		if(PATTERN.matcher(in).matches()) {return in;}
-		return null;
+	public RIQ(String n, KG175D k1, KG175D k2) {
+		name = n;
+		clients = new ArrayList<String>();
+		links = new ArrayList<Link>();
+		KG1 = k1;
+		KG2 = k2;
 	}
 	
 	public void setName(String in) {name=in;}
-	public void setLocalIP(String in) {localIP=ipValidation(in);}
-	public void setPort(int in) {udpPort=in;}
 	
 	public String getName() {return name;}
-	public String getLocalIP() {return localIP;}
-	public int getUDPPort() {return udpPort;} 
 	
 	public boolean addClient(String in) {
-		String IP = ipValidation(in);
+		String IP = Link.ipValidation(in);
 		if(IP != null) {
 			clients.add(IP);
 			return true;
@@ -54,10 +51,25 @@ public class RIQ {
 	}
 	
 	public boolean removeLink(String linkName) {
-		return links.remove(new Link(linkName));
+		for(int i=0;i<links.size();i++) {
+			if((links.get(i)).getName().compareTo(linkName) == 0) {
+				links.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public KG175D[] getKGs() {
+		return new KG175D[] {KG1, KG2};
+		
+	}
+	
+	public boolean removeLink(Link l) {
+		return links.remove(l);
 	}
 	
 	public String toString() {
-		return name + "\n" + localIP + "\n" + Integer.toString(udpPort);
+		return name;
 	}
 }

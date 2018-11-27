@@ -3,15 +3,20 @@ import java.util.regex.Pattern;
 
 public class Link implements Comparable<Link>{
 	private String name;
-	private RIQ riqLocal;
-	private RIQ riqDistant;
+	private RIQ localRIQ;
+	private RIQ remoteRIQ;
+	private String localIP;
+	private String remoteIP;
 	private int localUDP;
-	private int distantUDP;
+	private int remoteUDP;
 	private int type; // 0 for UHF; 1 for PPN
 	private String interfaceCES;
-	private static final Pattern PATTERN = Pattern.compile("^[13]\\:[13]$");
+	private static final Pattern PATTERN_INT = Pattern.compile("^[13]\\:[13]$");
+	private static final Pattern PATTERN_IP = Pattern.compile(
+			"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 	private String subnetMask;
 	private int vLAN;
+	private int kg175;
 	private String packetInterface;
 	private String gatewayIP;
 	private String description;
@@ -36,54 +41,46 @@ public class Link implements Comparable<Link>{
 		name = n;
 	}
 	
-	public Link(String n, RIQ a, RIQ b, int t) {
+	/**
+	 * Link Constructor
+	 * @param n Name
+	 * @param a Local RIQ
+	 * @param b Remote RIQ
+	 * @param t Type of link (0 for UHF, 1 for Fiber Shot)
+	 * @param lIP Local IP Address
+	 * @param rIP Remote IP Address
+	 * @param cesInt CES Interface
+	 * @param v VLAN
+	 * @param subnet Subnet Mask
+	 * @param gIP Gateway IP
+	 * @param kg Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+	 */
+	public Link(String n, RIQ a, RIQ b, int t, String lIP, String rIP, String cesInt, int v, String subnet, int kg) {
 		name = n;
-		riqLocal = a;
-		riqDistant = b;
-		type = t;
-	}
-	
-	public Link(String n, RIQ a, RIQ b, int t, String cesInt) {
-		name = n;
-		riqLocal = a;
-		riqDistant = b;
-		type = t;
-		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = "255.255.255.0";
-		gatewayIP = "0.0.0.0";
-	}
-	
-	public Link(String n, RIQ a, RIQ b, int t, String cesInt, int v, String subnet) {
-		name = n;
-		riqLocal = a;
-		riqDistant = b;
+		localRIQ = a;
+		remoteRIQ = b;
 		type = t;
 		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = RIQ.ipValidation(subnet); //DANGEROUS!!! You have no way of validating that the valid IP is a SUBNET MASK
+		subnetMask = ipValidation(subnet); //DANGEROUS!!! You have no way of validating that the valid IP is a SUBNET MASK
 		vLAN = v;
-		gatewayIP = "0.0.0.0";
-	}
-	
-	public Link(String n, RIQ a, RIQ b, int t, String cesInt, int v, String subnet, String gIP) {
-		name = n;
-		riqLocal = a;
-		riqDistant = b;
-		type = t;
-		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = RIQ.ipValidation(subnet); //DANGEROUS!!! You have no way of validating that the valid IP is a SUBNET MASK
-		vLAN = v;
-		gatewayIP = RIQ.ipValidation(gIP);
+		kg175 = kg;
 	}
 	
 	public static String validateCESInterface(String in) {
-		if(PATTERN.matcher(in).matches()) {return in;}
+		if(PATTERN_INT.matcher(in).matches()) {return in;}
+		return null;
+	}
+	
+	public static String ipValidation(String in) {
+		if(PATTERN_IP.matcher(in).matches()) {return in;}
 		return null;
 	}
 	
 	private void derivation() {
 		switch (type) {
 		case UHF: 	description = "UHF Shot";
-					localUDP = distantUDP = UHF_PORT;
+					gatewayIP = "0.0.0.0";
+					localUDP = remoteUDP = UHF_PORT;
 					switch (interfaceCES) {
 					case "1:1": packetInterface = "1:2";
 						break;
@@ -97,20 +94,21 @@ public class Link implements Comparable<Link>{
 					}
 					break;
 		case PPN: 	description = "Fiber Shot";
-					localUDP = riqLocal.getUDPPort();
-					distantUDP = riqDistant.getUDPPort();
+					gatewayIP = ((localRIQ.getKGs())[kg175]).getPTIP();
 					packetInterface = "2:4";
 					break;
 		default: 	description = "Error";
-					localUDP = distantUDP = 0;
+					localUDP = remoteUDP = 0;
 		}
 	}
 	
 	public String getName() {return name;}
-	public RIQ getLocalRIQ() {return riqLocal;}
-	public RIQ getRemoteRIQ() {return riqDistant;}
+	public RIQ getLocalRIQ() {return localRIQ;}
+	public RIQ getRemoteRIQ() {return remoteRIQ;}
 	public int getLocalUDP() {return localUDP;}
-	public int getDistantUDP() {return distantUDP;}
+	public int getRemoteUDP() {return remoteUDP;}
+	public String getLocalIP() {return localIP;}
+	public String getRemoteIP() {return remoteIP;}
 	public int getType() {return type;}
 	public String getCESInterface() {return interfaceCES;}
 	public String getSubnetMask() {return subnetMask;}
@@ -121,11 +119,11 @@ public class Link implements Comparable<Link>{
 	
 	public String toString() {
 		derivation();
-		return name+","+description+","+interfaceCES+","+riqLocal.getLocalIP()+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+PDV_BUFFER+","+ADMIN_STATUS+","+
-				CES_TYPE+","+packetInterface+","+riqDistant.getLocalIP()+","+distantUDP+","+gatewayIP+","+P_BIT+","+DSCP;
+		return name+","+description+","+interfaceCES+","+localIP+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+PDV_BUFFER+","+ADMIN_STATUS+","+
+				CES_TYPE+","+packetInterface+","+remoteIP+","+remoteUDP+","+gatewayIP+","+P_BIT+","+DSCP;
 	}
 	
 	public int compareTo(Link other) {
-		return name.compareTo(other.getName());
+		return toString().compareTo(other.toString());
 	}
 }
