@@ -1,6 +1,7 @@
 import java.util.regex.Pattern;
 
-public class Link {
+
+public class Link implements Comparable<Link>{
 	private String name;
 	private RIQ riqLocal;
 	private RIQ riqDistant;
@@ -29,6 +30,11 @@ public class Link {
 	
 	
 	public Link() {}
+	
+	// Used for creating a compareTo link (so we can remove links from a list)
+	public Link(String n) {
+		name = n;
+	}
 	
 	public Link(String n, RIQ a, RIQ b, int t) {
 		name = n;
@@ -100,9 +106,26 @@ public class Link {
 		}
 	}
 	
+	public String getName() {return name;}
+	public RIQ getLocalRIQ() {return riqLocal;}
+	public RIQ getRemoteRIQ() {return riqDistant;}
+	public int getLocalUDP() {return localUDP;}
+	public int getDistantUDP() {return distantUDP;}
+	public int getType() {return type;}
+	public String getCESInterface() {return interfaceCES;}
+	public String getSubnetMask() {return subnetMask;}
+	public int getVLAN() {return vLAN;}
+	public String getPacketInterface() {return packetInterface;}
+	public String getGatewayIP() {return gatewayIP;}
+	public String getDescription() {return description;}
+	
 	public String toString() {
 		derivation();
 		return name+","+description+","+interfaceCES+","+riqLocal.getLocalIP()+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+PDV_BUFFER+","+ADMIN_STATUS+","+
 				CES_TYPE+","+packetInterface+","+riqDistant.getLocalIP()+","+distantUDP+","+gatewayIP+","+P_BIT+","+DSCP;
+	}
+	
+	public int compareTo(Link other) {
+		return name.compareTo(other.getName());
 	}
 }

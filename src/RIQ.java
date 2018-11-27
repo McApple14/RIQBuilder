@@ -5,19 +5,20 @@ public class RIQ {
 	private String name;
 	private String localIP;
 	private int udpPort;
-	private ArrayList<String> Clients;	
+	private ArrayList<String> clients;
+	private ArrayList<Link> links;
 	private static final Pattern PATTERN = Pattern.compile(
 			"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 	
 	public RIQ() {
-		Clients = new ArrayList<String>();
+		clients = new ArrayList<String>();
 	}
 	
 	public RIQ(String n, String ip, int port) {
 		name = n;
 		localIP = ip;
 		udpPort = port;
-		Clients = new ArrayList<String>();
+		clients = new ArrayList<String>();
 	}
 	
 	public static String ipValidation(String in) {
@@ -36,17 +37,25 @@ public class RIQ {
 	public boolean addClient(String in) {
 		String IP = ipValidation(in);
 		if(IP != null) {
-			Clients.add(IP);
+			clients.add(IP);
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean removeClient(String in) {
-		return Clients.remove(in);
+		return clients.remove(in);
 	}
 	
-	public ArrayList<String> getClientList() {return Clients;}
+	public ArrayList<String> getClientList() {return clients;}
+	
+	public boolean addLink(Link link) {
+		return links.add(link);
+	}
+	
+	public boolean removeLink(String linkName) {
+		return links.remove(new Link(linkName));
+	}
 	
 	public String toString() {
 		return name + "\n" + localIP + "\n" + Integer.toString(udpPort);
