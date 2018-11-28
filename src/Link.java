@@ -24,8 +24,8 @@ public class Link implements Comparable<Link>{
 	private String description;
 	
 	//Constants
-	private static final int UHF = 0;
-	private static final int PPN = 1;
+	public static final int UHF = 0;
+	public static final int PPN = 1;
 	private static final int UHF_PORT = 50000;
 	//private static final int PPN_VLAN = 150;
 	private static final int IP_TTL = 1;
@@ -68,16 +68,87 @@ public class Link implements Comparable<Link>{
 		kg175 = kg;
 	}
 	
+	/**
+	 * Link Constructor
+	 * @param n Name
+	 * @param a Local RIQ
+	 * @param b Remote RIQ
+	 * @param t Type of link (0 for UHF, 1 for Fiber Shot)
+	 * @param lIP Local IP Address
+	 * @param rIP Remote IP Address
+	 * @param cesInt CES Interface
+	 * @param v VLAN
+	 * @param subnet Subnet Mask
+	 * @param gIP Gateway IP
+	 * @param kg Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+	 * @param port UDP port for local AND remote RIQs
+	 */
+	public Link(String n, RIQ a, RIQ b, int t, String lIP, String rIP, String cesInt, int v, String subnet, int kg, int port) {
+		name = n;
+		localRIQ = a;
+		remoteRIQ = b;
+		type = t;
+		interfaceCES = validateCESInterface(cesInt);
+		subnetMask = subnetMaskValidation(subnet);
+		vLAN = v;
+		kg175 = kg;
+		localUDP = remoteUDP = port;
+	}
+	
+	/**
+	 * Link Constructor
+	 * @param n Name
+	 * @param a Local RIQ
+	 * @param b Remote RIQ
+	 * @param t Type of link (0 for UHF, 1 for Fiber Shot)
+	 * @param lIP Local IP Address
+	 * @param rIP Remote IP Address
+	 * @param cesInt CES Interface
+	 * @param v VLAN
+	 * @param subnet Subnet Mask
+	 * @param gIP Gateway IP
+	 * @param kg Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+	 * @param localPort UDP port for local RIQ
+	 * @param remotePort UDP port for remote RIQ
+	 */
+	public Link(String n, RIQ a, RIQ b, int t, String lIP, String rIP, String cesInt, int v, String subnet, int kg, int localPort, int remotePort) {
+		name = n;
+		localRIQ = a;
+		remoteRIQ = b;
+		type = t;
+		interfaceCES = validateCESInterface(cesInt);
+		subnetMask = subnetMaskValidation(subnet);
+		vLAN = v;
+		kg175 = kg;
+		localUDP = localPort;
+		remoteUDP = remotePort;
+	}
+	
+	/**
+	 * validateCESInterface
+	 * @param in CES Interface String input
+	 * @return returns the input if valid; returns null if invalid
+	 */
 	public static String validateCESInterface(String in) {
 		if(PATTERN_INT.matcher(in).matches()) {return in;}
 		return null;
 	}
 	
+	/**
+	 * ipValidation
+	 * @param in IP Address String input
+	 * @return returns the input if a valid IP; returns null if invalid
+	 */
 	public static String ipValidation(String in) {
 		if(PATTERN_IP.matcher(in).matches()) {return in;}
 		return null;
 	}
 	
+	/**
+	 * subnetMaskValidation
+	 * @param in Subnet Mask String input
+	 * @return returns input if a valid Subnet Mask; returns null if invalid
+	 */
 	public static String subnetMaskValidation(String in) {
 		if(PATTERN_SUBNET.matcher(in).matches()) {return in;}
 		return null;
@@ -105,7 +176,7 @@ public class Link implements Comparable<Link>{
 					packetInterface = "2:4";
 					break;
 		default: 	description = "Error";
-					localUDP = remoteUDP = 0;
+					localUDP = remoteUDP = UHF_PORT;
 		}
 	}
 	
@@ -126,8 +197,9 @@ public class Link implements Comparable<Link>{
 	
 	public String toString() {
 		derivation();
-		return name+","+description+","+interfaceCES+","+localIP+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+PDV_BUFFER+","+ADMIN_STATUS+","+
-				CES_TYPE+","+packetInterface+","+remoteIP+","+remoteUDP+","+gatewayIP+","+P_BIT+","+DSCP;
+		return name+","+description+","+interfaceCES+","+localIP+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+
+				PDV_BUFFER+","+ADMIN_STATUS+","+CES_TYPE+","+packetInterface+","+remoteIP+","+remoteUDP+","+gatewayIP+","+
+				P_BIT+","+DSCP;
 	}
 	
 	public int compareTo(Link other) {

@@ -1,12 +1,38 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
-	public ArrayList<String> ipScheme;
+	public static String[][] ipScheme;
+	public static int[][] vlanScheme;
+	public static ArrayList<RIQ> riqs;
+	public static ArrayList<Link> links;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		int numRIQs = 6;
+		int base = 30;
+		String uhfBase = "192.168.0.0";
+		String ppnBase = "138.127.1.0";
+		
+		System.out.println("VLAN Base = "+base+"; numRIQs = "+numRIQs);
+		
+		vlanSchemeBuilder(numRIQs,base);
+		for(int[] row : vlanScheme) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println();
+		
+		ipSchemeBuilder(numRIQs,1,ppnBase);
+		for(String[] row : ipScheme) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println();
+		
+		ipSchemeBuilder(numRIQs,0,uhfBase);
+		for(String[] row : ipScheme) {
+			System.out.println(Arrays.toString(row));
+		}
 		
 		/*// NOTE: THIS CONSOLE IS FOR TESTING PURPOSES ONLY!!!
 		Scanner keyboard = new Scanner(System.in);
@@ -86,6 +112,63 @@ public class Main {
 		} while(input == "y");
 		keyboard.close();
 		*/
+	}
+	
+	public static void vlanSchemeBuilder(int numRIQs, int base) throws IllegalArgumentException {
+		vlanScheme = new int[numRIQs][numRIQs];
+		int count = base;
+		for(int i=0;i<numRIQs;i++) {
+			for(int j=0;j<i;j++) {
+				vlanScheme[i][j] = vlanScheme[j][i] = count;
+				count++;
+			}
+		}
+	}
+	
+	public static void ipSchemeBuilder(int numRIQs, int type, String baseIP) {
+		ipScheme = new String[numRIQs][numRIQs];
+		int count;
+		String base;
+		
+		switch(type) {
+		case Link.UHF:
+			count = 0;
+			base = 	(baseIP.split("\\."))[0]+"."+
+					(baseIP.split("\\."))[1]+".";
+			for(int i=0;i<numRIQs;i++) {
+				for(int j=0;j<numRIQs;j++) {
+					if(i==j) {ipScheme[i][j]="0.0.0.0";}
+					else {
+						if(count==0) {ipScheme[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat(".41"));}
+						else {ipScheme[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat("."+Integer.toString(count)));}
+					}
+				}
+				count++;
+			}
+			break;
+		case Link.PPN:
+			count = 0;
+			base = 	(baseIP.split("\\."))[0]+"."+
+					(baseIP.split("\\."))[1]+"."+
+					(baseIP.split("\\."))[2]+".";
+			for(int i=0;i<numRIQs;i++) {
+				for(int j=0;j<numRIQs;j++) {
+					if(i==j) {ipScheme[i][j]="0.0.0.0";}
+					else {
+						if(count==0) {ipScheme[i][j]=base.concat("41");}
+						else {ipScheme[i][j]=base.concat(Integer.toString(count));}
+					}
+				}
+				count++;
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid Type (0 for UHF, 1 for Fiber Shot)");
+		}
+	}
+	
+	public static void linkBuilder() {
+		links = new ArrayList<Link>();
 	}
 
 }
