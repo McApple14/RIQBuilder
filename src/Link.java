@@ -14,6 +14,8 @@ public class Link implements Comparable<Link>{
 	private static final Pattern PATTERN_INT = Pattern.compile("^[13]\\:[13]$");
 	private static final Pattern PATTERN_IP = Pattern.compile(
 			"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+	private static final Pattern PATTERN_SUBNET = Pattern.compile(
+			"^(255)\\.(0|128|192|224|240|248|25[245])\\.(0|128|192|224|240|248|25[245])\\.(0|128|192|224|240|248|25[245])$");
 	private String subnetMask;
 	private int vLAN;
 	private int kg175;
@@ -61,7 +63,7 @@ public class Link implements Comparable<Link>{
 		remoteRIQ = b;
 		type = t;
 		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = ipValidation(subnet); //DANGEROUS!!! You have no way of validating that the valid IP is a SUBNET MASK
+		subnetMask = subnetMaskValidation(subnet);
 		vLAN = v;
 		kg175 = kg;
 	}
@@ -73,6 +75,11 @@ public class Link implements Comparable<Link>{
 	
 	public static String ipValidation(String in) {
 		if(PATTERN_IP.matcher(in).matches()) {return in;}
+		return null;
+	}
+	
+	public static String subnetMaskValidation(String in) {
+		if(PATTERN_SUBNET.matcher(in).matches()) {return in;}
 		return null;
 	}
 	
