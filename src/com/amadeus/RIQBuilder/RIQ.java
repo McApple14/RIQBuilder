@@ -6,8 +6,8 @@ public class RIQ {
 	private String name;
 	private ArrayList<String> clients;
 	private ArrayList<Link> links;
-	private KG175D KG1;
-	private KG175D KG2;
+	private KG175D kg1;
+	private KG175D kg2;
 	private boolean isHub;
 	
 	
@@ -16,25 +16,27 @@ public class RIQ {
 		links = new ArrayList<Link>();
 	}
 	
-	public RIQ(String n) {
-		name = n;
+	public RIQ(String name) {
+		this.name = name;
 		clients = new ArrayList<String>();
 		links = new ArrayList<Link>();
 		isHub = false;
 	}
 	
-	public RIQ(String n, KG175D k1, KG175D k2) {
-		name = n;
+	public RIQ(String name, KG175D kg1, KG175D kg2) {
+		this.name = name;
 		clients = new ArrayList<String>();
 		links = new ArrayList<Link>();
-		KG1 = k1;
-		KG2 = k2;
+		this.kg1 = kg1;
+		this.kg2 = kg2;
 		isHub = false;
 	}
 	
 	public void setName(String in) {name=in;}
+	public void setKGs(KG175D[] kgs) {kg1=kgs[0];kg2=kgs[1];}
 	
 	public String getName() {return name;}
+	public KG175D[] getKGs() {return new KG175D[] {kg1, kg2};}
 	
 	public boolean addClient(String in) {
 		String IP = Link.ipValidation(in);
@@ -63,11 +65,6 @@ public class RIQ {
 			}
 		}
 		return false;
-	}
-	
-	public KG175D[] getKGs() {
-		return new KG175D[] {KG1, KG2};
-		
 	}
 	
 	public boolean removeLink(Link l) {

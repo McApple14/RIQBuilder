@@ -28,7 +28,7 @@ public class Link implements Comparable<Link>{
 	//Constants
 	public static final int UHF = 0;
 	public static final int PPN = 1;
-	private static final int UHF_PORT = 50000;
+	public static final int UHF_PORT = 50000;
 	//private static final int PPN_VLAN = 150;
 	private static final int IP_TTL = 1;
 	private static final String PDV_BUFFER = "Low";
@@ -47,81 +47,84 @@ public class Link implements Comparable<Link>{
 	
 	/**
 	 * Link Constructor
-	 * @param n Name
-	 * @param a Local RIQ
-	 * @param b Remote RIQ
-	 * @param t Type of link (0 for UHF, 1 for Fiber Shot)
-	 * @param lIP Local IP Address
-	 * @param rIP Remote IP Address
-	 * @param cesInt CES Interface
-	 * @param v VLAN
-	 * @param subnet Subnet Mask
-	 * @param gIP Gateway IP
-	 * @param kg Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+	 * @param name Name
+	 * @param localRIQ Local RIQ
+	 * @param localRIQ Remote RIQ
+	 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+	 * @param localIP Local IP Address
+	 * @param remoteIP Remote IP Address
+	 * @param interfaceCES CES Interface
+	 * @param vLAN VLAN
+	 * @param subnetMask Subnet Mask
+	 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
 	 */
-	public Link(String n, RIQ a, RIQ b, int t, String lIP, String rIP, String cesInt, int v, String subnet, int kg) {
-		name = n;
-		localRIQ = a;
-		remoteRIQ = b;
-		type = t;
-		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = subnetMaskValidation(subnet);
-		vLAN = v;
-		kg175d = kg;
+	public Link(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d) {
+		this.name = name;
+		this.localRIQ = localRIQ;
+		this.remoteRIQ = localRIQ;
+		this.localIP = localIP;
+		this.remoteIP = remoteIP;
+		this.type = type;
+		this.interfaceCES = validateCESInterface(interfaceCES);
+		this.subnetMask = subnetMaskValidation(subnetMask);
+		this.vLAN = vLAN;
+		this.kg175d = kg175d;
 	}
 	
 	/**
 	 * Link Constructor
-	 * @param n Name
-	 * @param a Local RIQ
-	 * @param b Remote RIQ
-	 * @param t Type of link (0 for UHF, 1 for Fiber Shot)
-	 * @param lIP Local IP Address
-	 * @param rIP Remote IP Address
-	 * @param cesInt CES Interface
-	 * @param v VLAN
-	 * @param subnet Subnet Mask
-	 * @param gIP Gateway IP
-	 * @param kg Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
-	 * @param port UDP port for local AND remote RIQs
+	 * @param name Name
+	 * @param localRIQ Local RIQ
+	 * @param localRIQ Remote RIQ
+	 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+	 * @param localIP Local IP Address
+	 * @param remoteIP Remote IP Address
+	 * @param interfaceCES CES Interface
+	 * @param vLAN VLAN
+	 * @param subnetMask Subnet Mask
+	 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+	 * @param udpPort UDP port for local AND remote RIQs
 	 */
-	public Link(String n, RIQ a, RIQ b, int t, String lIP, String rIP, String cesInt, int v, String subnet, int kg, int port) {
-		name = n;
-		localRIQ = a;
-		remoteRIQ = b;
-		type = t;
-		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = subnetMaskValidation(subnet);
-		vLAN = v;
-		kg175d = kg;
-		localUDP = remoteUDP = port;
+	public Link(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d, int udpPort) {
+		this.name = name;
+		this.localRIQ = localRIQ;
+		this.remoteRIQ = localRIQ;
+		this.localIP = localIP;
+		this.remoteIP = remoteIP;
+		this.type = type;
+		this.interfaceCES = validateCESInterface(interfaceCES);
+		this.subnetMask = subnetMaskValidation(subnetMask);
+		this.vLAN = vLAN;
+		this.kg175d = kg175d;
+		localUDP = remoteUDP = udpPort;
 	}
 	
 	/**
 	 * Link Constructor
-	 * @param n Name
-	 * @param a Local RIQ
-	 * @param b Remote RIQ
-	 * @param t Type of link (0 for UHF, 1 for Fiber Shot)
-	 * @param lIP Local IP Address
-	 * @param rIP Remote IP Address
-	 * @param cesInt CES Interface
-	 * @param v VLAN
-	 * @param subnet Subnet Mask
-	 * @param gIP Gateway IP
-	 * @param kg Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+	 * @param name Name
+	 * @param localRIQ Local RIQ
+	 * @param localRIQ Remote RIQ
+	 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+	 * @param localIP Local IP Address
+	 * @param remoteIP Remote IP Address
+	 * @param interfaceCES CES Interface
+	 * @param vLAN VLAN
+	 * @param subnetMask Subnet Mask
+	 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
 	 * @param localPort UDP port for local RIQ
 	 * @param remotePort UDP port for remote RIQ
 	 */
-	public Link(String n, RIQ a, RIQ b, int t, String lIP, String rIP, String cesInt, int v, String subnet, int kg, int localPort, int remotePort) {
-		name = n;
-		localRIQ = a;
-		remoteRIQ = b;
-		type = t;
-		interfaceCES = validateCESInterface(cesInt);
-		subnetMask = subnetMaskValidation(subnet);
-		vLAN = v;
-		kg175d = kg;
+	public Link(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d, int localPort, int remotePort) {
+		this.name = name;
+		this.localRIQ = localRIQ;
+		this.remoteRIQ = localRIQ;
+		this.localIP = localIP;
+		this.remoteIP = remoteIP;
+		this.type = type;
+		this.interfaceCES = validateCESInterface(interfaceCES);
+		this.subnetMask = subnetMaskValidation(subnetMask);
+		this.vLAN = vLAN;
+		this.kg175d = kg175d;
 		localUDP = localPort;
 		remoteUDP = remotePort;
 	}

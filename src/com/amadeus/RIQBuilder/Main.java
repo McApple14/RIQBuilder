@@ -8,15 +8,17 @@ public class Main {
 	public static String[][] ipScheme_PPN;
 	public static String[][][][] kgScheme; 
 	public static int[][] vlanScheme;
+	public static int[][] portScheme;
 	public static ArrayList<RIQ> riqs;
 	public static ArrayList<Link> links;
+	public static String kgGateway;
 	
 	/* Note:
-	 * kgScheme[SIDE][PT/CT][i][j]
-	 * SIDE: The side the KG is on (left=0; right=1)
-	 * PT/CT: Which IP (Plain Text / Cipher Text)
+	 * kgScheme[i][j][SIDE][PT/CT]
 	 * i: row i which corresponds to the ipScheme
 	 * j: col j which corresponds to the ipScheme
+	 * SIDE: The side the KG is on (left=0; right=1)
+	 * PT/CT: Which IP (Plain Text / Cipher Text)
 	 */
 	
 	public static void main(String[] args) {
@@ -53,15 +55,32 @@ public class Main {
 		for(String[] row : ipScheme_UHF) {
 			System.out.println(Arrays.toString(row));
 		}
+		System.out.println();
 		
 		kgSchemeBuilder("172.16.16.0");
-		for(String[] row : kgScheme[0][0]) {
+		for(int i=0; i<riqs.size();i++) {
+			System.out.print("[");
+			for(int j=0; j<riqs.size();j++) {
+				System.out.print(kgScheme[i][j][0][0]+",\t");
+			}
+			System.out.println("]");
+		}
+		System.out.println();
+		for(int i=0; i<riqs.size();i++) {
+			System.out.print("[");
+			for(int j=0; j<riqs.size();j++) {
+				System.out.print(kgScheme[i][j][0][1]+",\t");
+			}
+			System.out.println("]");
+		}
+		System.out.println();
+		/*for(String[][][] row : kgScheme) {
 			System.out.println(Arrays.toString(row));
 		}
 		System.out.println();
-		for(String[] row : kgScheme[0][1]) {
+		for(String[][][] row : kgScheme) {
 			System.out.println(Arrays.toString(row));
-		}
+		}*/
 		System.out.println();
 
 		/*// NOTE: THIS CONSOLE IS FOR TESTING PURPOSES ONLY!!!
@@ -201,17 +220,14 @@ public class Main {
 	public static void kgSchemeBuilder(String baseIP) {
 		if(ipScheme_PPN == null) {return;}
 		int length = ipScheme_PPN[0].length;
-		kgScheme = new String[2][2][length][length];
+		kgScheme = new String[length][length][2][2];
 		
 		
 		for(int i=0;i<length;i++) {
 			for(int j=0;j<length;j++) {
-				if(i==j) {kgScheme[0][0][i][j] = "0.0.0.0";}
-				else {
-					String[] ip = (ipScheme_PPN[i][j]).split("\\.");
-					kgScheme[0][0][i][j] = ip[0]+"."+ip[1]+"."+ip[2]+"."+Integer.toString(Integer.valueOf(ip[3])+100);
-					kgScheme[1][0][i][j] = ip[0]+"."+ip[1]+"."+ip[2]+"."+"2"+Integer.toString(Integer.valueOf(ip[3])+100);
-				}
+				String[] ip = (ipScheme_PPN[i][j]).split("\\.");
+				kgScheme[i][j][0][0] = ip[0]+"."+ip[1]+"."+ip[2]+"."+Integer.toString(Integer.valueOf(ip[3])+100);
+				kgScheme[i][j][1][0] = ip[0]+"."+ip[1]+"."+ip[2]+"."+"2"+Integer.toString(Integer.valueOf(ip[3])+100);
 			}				
 		}
 		
@@ -221,19 +237,33 @@ public class Main {
 				(baseIP.split("\\."))[2]+".";
 		for(int i=0;i<length;i++) {
 			for(int j=0;j<length;j++) {
-				if(i==j) {kgScheme[0][1][i][j]="0.0.0.0";}
-				else {
-					if(count==16) {count++;}
-					kgScheme[0][1][i][j]=base.concat(Integer.toString(count));
-					kgScheme[1][1][i][j]=base.concat(Integer.toString(count+ipScheme_PPN[0].length));
-				}
+				if(count==16) {count++;}
+				kgScheme[i][j][0][1]=base.concat(Integer.toString(count));
+				kgScheme[i][j][1][1]=base.concat(Integer.toString(count+ipScheme_PPN[0].length));
 			}
 			count++;
 		}
 	}
 	
-	public static void linkBuilder() {
+	public static void portSchemeBuilder() {
+		portScheme = new int[riqs.size()][riqs.size()];
+		int count = Link.UHF_PORT;
+		for(int i=0;i<riqs.size();i++) {
+			for(int j=0;j<i;j++) {
+				portScheme[i][j] = portScheme[j][i] = count;
+				count+=100;
+			}
+		}
+	}
+	
+	//public KG175D(String name, String ptIP, String ptGW, String ctIP, String ctGW)
+	public static void initialization() {
 		links = new ArrayList<Link>();
+		
+		for(RIQ riq : riqs) {
+			riq.setKGs(new KG175D[] {new KG175D(riq.getName().concat("LeftKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][0],"0.0.0.0",kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][1],kgGateway),
+					new KG175D(riq.getName().concat("RightKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][0],"0.0.0.0",kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][1],kgGateway)});
+		}
 	}
 
 }

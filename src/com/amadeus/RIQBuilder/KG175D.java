@@ -12,12 +12,12 @@ public class KG175D {
 	
 	public KG175D() {}
 	
-	public KG175D(String n, String pt, String ptg, String ct, String ctg) {
-		name = n;
-		ptIP = pt;
-		ptGW = ptg;
-		ctIP = ct;
-		ctGW = ctg;
+	public KG175D(String name, String ptIP, String ptGW, String ctIP, String ctGW) {
+		this.name = name;
+		this.ptIP = ptIP;
+		this.ptGW = ptGW;
+		this.ctIP = ctIP;
+		this.ctGW = ctGW;
 	}
 	
 	public String getName() {return name;}

@@ -9,12 +9,12 @@ public class SA implements Comparable<SA>{
 	
 	public SA() {}
 	
-	public SA(String n, String h, String pt, String ct, int c) {
-		name = n;
-		host = Link.ipValidation(h);
-		remotePT = Link.ipValidation(pt);
-		remoteCT = Link.ipValidation(ct);
-		cidr = c;
+	public SA(String name, String host, String remotePT, String remoteCT, int cidr) {
+		this.name = name;
+		this.host = Link.ipValidation(host);
+		this.remotePT = Link.ipValidation(remotePT);
+		this.remoteCT = Link.ipValidation(remoteCT);
+		this.cidr = cidr;
 	}
 	
 	public String getName() {return name;}
