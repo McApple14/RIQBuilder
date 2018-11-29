@@ -1,10 +1,12 @@
+package com.amadeus.RIQBuilder;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class GUI {
 
-	protected Shell shell;
+	protected Shell shlRiqbuilder;
 
 	/**
 	 * Launch the application.
@@ -25,9 +27,9 @@ public class GUI {
 	public void open() {
 		Display display = Display.getDefault();
 		createContents();
-		shell.open();
-		shell.layout();
-		while (!shell.isDisposed()) {
+		shlRiqbuilder.open();
+		shlRiqbuilder.layout();
+		while (!shlRiqbuilder.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -38,9 +40,9 @@ public class GUI {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shell = new Shell();
-		shell.setSize(700, 400);
-		shell.setText("SWT Application");
+		shlRiqbuilder = new Shell();
+		shlRiqbuilder.setSize(700, 400);
+		shlRiqbuilder.setText("RIQBuilder");
 
 	}
 

@@ -1,3 +1,5 @@
+package com.amadeus.RIQBuilder;
+
 import java.util.*;
 
 public class RIQ {
@@ -6,6 +8,7 @@ public class RIQ {
 	private ArrayList<Link> links;
 	private KG175D KG1;
 	private KG175D KG2;
+	private boolean isHub;
 	
 	
 	public RIQ() {
@@ -17,6 +20,7 @@ public class RIQ {
 		name = n;
 		clients = new ArrayList<String>();
 		links = new ArrayList<Link>();
+		isHub = false;
 	}
 	
 	public RIQ(String n, KG175D k1, KG175D k2) {
@@ -25,6 +29,7 @@ public class RIQ {
 		links = new ArrayList<Link>();
 		KG1 = k1;
 		KG2 = k2;
+		isHub = false;
 	}
 	
 	public void setName(String in) {name=in;}
@@ -67,6 +72,18 @@ public class RIQ {
 	
 	public boolean removeLink(Link l) {
 		return links.remove(l);
+	}
+	
+	public void clientSABuilder(Link link) {
+		ArrayList<String> devices = (link.getRemoteRIQ()).getClientList();
+		KG175D remoteKG = (link.getRemoteRIQ()).getKGs()[link.getSideKG()];
+		(getKGs())[link.getSideKG()].addSA("RemoteRIQ "+(link.getRemoteRIQ().getName()), link.getRemoteIP(), remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
+		
+		int count = 1;
+		for(String ip : devices) {
+			(getKGs())[link.getSideKG()].addSA((link.getRemoteRIQ().getName())+" Client "+count++, ip, remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
+		}
+		
 	}
 	
 	public String toString() {

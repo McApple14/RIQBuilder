@@ -1,3 +1,5 @@
+package com.amadeus.RIQBuilder;
+
 import java.util.*;
 
 public class Main {

@@ -1,3 +1,4 @@
+package com.amadeus.RIQBuilder;
 
 public class SA implements Comparable<SA>{
 	private String name;

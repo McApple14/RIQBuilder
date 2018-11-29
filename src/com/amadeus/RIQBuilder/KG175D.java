@@ -1,3 +1,5 @@
+package com.amadeus.RIQBuilder;
+
 import java.util.ArrayList;
 
 public class KG175D {

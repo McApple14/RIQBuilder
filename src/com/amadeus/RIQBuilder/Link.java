@@ -1,3 +1,5 @@
+package com.amadeus.RIQBuilder;
+
 import java.util.regex.Pattern;
 
 
@@ -18,7 +20,7 @@ public class Link implements Comparable<Link>{
 			"^(255)\\.(0|128|192|224|240|248|25[245])\\.(0|128|192|224|240|248|25[245])\\.(0|128|192|224|240|248|25[245])$");
 	private String subnetMask;
 	private int vLAN;
-	private int kg175;
+	private int kg175d;
 	private String packetInterface;
 	private String gatewayIP;
 	private String description;
@@ -65,7 +67,7 @@ public class Link implements Comparable<Link>{
 		interfaceCES = validateCESInterface(cesInt);
 		subnetMask = subnetMaskValidation(subnet);
 		vLAN = v;
-		kg175 = kg;
+		kg175d = kg;
 	}
 	
 	/**
@@ -91,7 +93,7 @@ public class Link implements Comparable<Link>{
 		interfaceCES = validateCESInterface(cesInt);
 		subnetMask = subnetMaskValidation(subnet);
 		vLAN = v;
-		kg175 = kg;
+		kg175d = kg;
 		localUDP = remoteUDP = port;
 	}
 	
@@ -119,7 +121,7 @@ public class Link implements Comparable<Link>{
 		interfaceCES = validateCESInterface(cesInt);
 		subnetMask = subnetMaskValidation(subnet);
 		vLAN = v;
-		kg175 = kg;
+		kg175d = kg;
 		localUDP = localPort;
 		remoteUDP = remotePort;
 	}
@@ -172,7 +174,7 @@ public class Link implements Comparable<Link>{
 					}
 					break;
 		case PPN: 	description = "Fiber Shot";
-					gatewayIP = ((localRIQ.getKGs())[kg175]).getPTIP();
+					gatewayIP = ((localRIQ.getKGs())[kg175d]).getPTIP();
 					packetInterface = "2:4";
 					break;
 		default: 	description = "Error";
@@ -194,6 +196,12 @@ public class Link implements Comparable<Link>{
 	public String getPacketInterface() {return packetInterface;}
 	public String getGatewayIP() {return gatewayIP;}
 	public String getDescription() {return description;}
+	public int getSideKG() {return kg175d;}
+	
+	public void buildSAs() {
+		localRIQ.clientSABuilder(this);
+		remoteRIQ.clientSABuilder(this);
+	}
 	
 	public String toString() {
 		derivation();
