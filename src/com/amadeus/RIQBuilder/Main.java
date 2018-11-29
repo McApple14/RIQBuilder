@@ -4,10 +4,20 @@ import java.util.*;
 
 public class Main {
 
-	public static String[][] ipScheme;
+	public static String[][] ipScheme_UHF;
+	public static String[][] ipScheme_PPN;
+	public static String[][][][] kgScheme; 
 	public static int[][] vlanScheme;
 	public static ArrayList<RIQ> riqs;
 	public static ArrayList<Link> links;
+	
+	/* Note:
+	 * kgScheme[SIDE][PT/CT][i][j]
+	 * SIDE: The side the KG is on (left=0; right=1)
+	 * PT/CT: Which IP (Plain Text / Cipher Text)
+	 * i: row i which corresponds to the ipScheme
+	 * j: col j which corresponds to the ipScheme
+	 */
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -16,8 +26,16 @@ public class Main {
 		int base = 30;
 		String uhfBase = "192.168.0.0";
 		String ppnBase = "138.127.1.0";
+		ArrayList<RIQ> riqs = new ArrayList<RIQ>();
 		
-		System.out.println("VLAN Base = "+base+"; numRIQs = "+numRIQs);
+		riqs.add(new RIQ("ICC"));
+		riqs.add(new RIQ("Alpha"));
+		riqs.add(new RIQ("Bravo"));
+		riqs.add(new RIQ("Charlie"));
+		riqs.add(new RIQ("Delta"));
+		riqs.add(new RIQ("CRG"));
+		
+		//System.out.println("VLAN Base = "+base+"; numRIQs = "+numRIQs);
 		
 		vlanSchemeBuilder(numRIQs,base);
 		for(int[] row : vlanScheme) {
@@ -26,16 +44,26 @@ public class Main {
 		System.out.println();
 		
 		ipSchemeBuilder(numRIQs,1,ppnBase);
-		for(String[] row : ipScheme) {
+		for(String[] row : ipScheme_PPN) {
 			System.out.println(Arrays.toString(row));
 		}
 		System.out.println();
 		
 		ipSchemeBuilder(numRIQs,0,uhfBase);
-		for(String[] row : ipScheme) {
+		for(String[] row : ipScheme_UHF) {
 			System.out.println(Arrays.toString(row));
 		}
 		
+		kgSchemeBuilder("172.16.16.0");
+		for(String[] row : kgScheme[0][0]) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println();
+		for(String[] row : kgScheme[0][1]) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println();
+
 		/*// NOTE: THIS CONSOLE IS FOR TESTING PURPOSES ONLY!!!
 		Scanner keyboard = new Scanner(System.in);
 		RIQ local;
@@ -128,37 +156,38 @@ public class Main {
 	}
 	
 	public static void ipSchemeBuilder(int numRIQs, int type, String baseIP) {
-		ipScheme = new String[numRIQs][numRIQs];
 		int count;
 		String base;
 		
 		switch(type) {
 		case Link.UHF:
+			ipScheme_UHF = new String[numRIQs][numRIQs];
 			count = 0;
 			base = 	(baseIP.split("\\."))[0]+"."+
 					(baseIP.split("\\."))[1]+".";
 			for(int i=0;i<numRIQs;i++) {
 				for(int j=0;j<numRIQs;j++) {
-					if(i==j) {ipScheme[i][j]="0.0.0.0";}
+					if(i==j) {ipScheme_UHF[i][j]="0.0.0.0";}
 					else {
-						if(count==0) {ipScheme[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat(".41"));}
-						else {ipScheme[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat("."+Integer.toString(count)));}
+						if(count==0) {ipScheme_UHF[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat(".41"));}
+						else {ipScheme_UHF[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat("."+Integer.toString(count)));}
 					}
 				}
 				count++;
 			}
 			break;
 		case Link.PPN:
+			ipScheme_PPN = new String[numRIQs][numRIQs];
 			count = 0;
 			base = 	(baseIP.split("\\."))[0]+"."+
 					(baseIP.split("\\."))[1]+"."+
 					(baseIP.split("\\."))[2]+".";
 			for(int i=0;i<numRIQs;i++) {
 				for(int j=0;j<numRIQs;j++) {
-					if(i==j) {ipScheme[i][j]="0.0.0.0";}
+					if(i==j) {ipScheme_PPN[i][j]="0.0.0.0";}
 					else {
-						if(count==0) {ipScheme[i][j]=base.concat("41");}
-						else {ipScheme[i][j]=base.concat(Integer.toString(count));}
+						if(count==0) {ipScheme_PPN[i][j]=base.concat("41");}
+						else {ipScheme_PPN[i][j]=base.concat(Integer.toString(count));}
 					}
 				}
 				count++;
@@ -166,6 +195,40 @@ public class Main {
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid Type (0 for UHF, 1 for Fiber Shot)");
+		}
+	}
+	
+	public static void kgSchemeBuilder(String baseIP) {
+		if(ipScheme_PPN == null) {return;}
+		int length = ipScheme_PPN[0].length;
+		kgScheme = new String[2][2][length][length];
+		
+		
+		for(int i=0;i<length;i++) {
+			for(int j=0;j<length;j++) {
+				if(i==j) {kgScheme[0][0][i][j] = "0.0.0.0";}
+				else {
+					String[] ip = (ipScheme_PPN[i][j]).split("\\.");
+					kgScheme[0][0][i][j] = ip[0]+"."+ip[1]+"."+ip[2]+"."+Integer.toString(Integer.valueOf(ip[3])+100);
+					kgScheme[1][0][i][j] = ip[0]+"."+ip[1]+"."+ip[2]+"."+"2"+Integer.toString(Integer.valueOf(ip[3])+100);
+				}
+			}				
+		}
+		
+		int count = 1;
+		String base = 	(baseIP.split("\\."))[0]+"."+
+				(baseIP.split("\\."))[1]+"."+
+				(baseIP.split("\\."))[2]+".";
+		for(int i=0;i<length;i++) {
+			for(int j=0;j<length;j++) {
+				if(i==j) {kgScheme[0][1][i][j]="0.0.0.0";}
+				else {
+					if(count==16) {count++;}
+					kgScheme[0][1][i][j]=base.concat(Integer.toString(count));
+					kgScheme[1][1][i][j]=base.concat(Integer.toString(count+ipScheme_PPN[0].length));
+				}
+			}
+			count++;
 		}
 	}
 	
