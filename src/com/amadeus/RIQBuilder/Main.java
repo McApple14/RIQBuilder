@@ -4,8 +4,9 @@ import java.util.*;
 
 public class Main {
 
-	public static String[][] ipScheme_UHF;
-	public static String[][] ipScheme_PPN;
+	//public static String[][] ipScheme_UHF;
+	//public static String[][] ipScheme_PPN;
+	public static String[][][] ipScheme;
 	public static String[][][][] kgScheme; 
 	public static int[][] vlanScheme;
 	public static int[][] portScheme;
@@ -21,14 +22,22 @@ public class Main {
 	 * PT/CT: Which IP (Plain Text / Cipher Text)
 	 */
 	
+	/* Note:
+	 * ipScheme[i][j][TYPE]
+	 * i: row i which corresponds to the ipScheme
+	 * j: col j which corresponds to the ipScheme
+	 * TYPE: Type of shot the IP corresponds to (UHF=0; PPN=1)
+	 */
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		int numRIQs = 6;
-		int base = 30;
 		String uhfBase = "192.168.0.0";
-		String ppnBase = "138.127.1.0";
-		ArrayList<RIQ> riqs = new ArrayList<RIQ>();
+		String ppnBase = "198.127.1.0";
+		String kgBase = "10.11.16.0";
+		int vlanBase = 30;
+		
+		riqs = new ArrayList<RIQ>();
 		
 		riqs.add(new RIQ("ICC"));
 		riqs.add(new RIQ("Alpha"));
@@ -37,31 +46,45 @@ public class Main {
 		riqs.add(new RIQ("Delta"));
 		riqs.add(new RIQ("CRG"));
 		
-		//System.out.println("VLAN Base = "+base+"; numRIQs = "+numRIQs);
+		int numRIQs = riqs.size();
+		System.out.println("VLAN Base = "+vlanBase+"; numRIQs = "+numRIQs);
+		//public static void initialization(int baseVLAN, String basePPN, String baseUHF, String baseKG)
+		initialization(vlanBase, ppnBase, uhfBase, kgBase);
 		
-		vlanSchemeBuilder(numRIQs,base);
+		//vlanSchemeBuilder(base);
 		for(int[] row : vlanScheme) {
 			System.out.println(Arrays.toString(row));
 		}
 		System.out.println();
 		
-		ipSchemeBuilder(numRIQs,1,ppnBase);
-		for(String[] row : ipScheme_PPN) {
-			System.out.println(Arrays.toString(row));
+		//ipSchemeBuilder(Link.PPN,ppnBase);
+		for(int i=0; i<numRIQs;i++) {
+			System.out.print("[");
+			for(int j=0; j<numRIQs;j++) {
+				System.out.print(ipScheme[i][j][Link.PPN]);
+				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			}
+			System.out.println("]");
 		}
 		System.out.println();
 		
-		ipSchemeBuilder(numRIQs,0,uhfBase);
-		for(String[] row : ipScheme_UHF) {
-			System.out.println(Arrays.toString(row));
+		//ipSchemeBuilder(Link.UHF,uhfBase);
+		for(int i=0; i<numRIQs;i++) {
+			System.out.print("[");
+			for(int j=0; j<numRIQs;j++) {
+				System.out.print(ipScheme[i][j][Link.UHF]);
+				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			}
+			System.out.println("]");
 		}
 		System.out.println();
 		
-		kgSchemeBuilder("172.16.16.0");
+		//kgSchemeBuilder("172.16.32.0");
 		for(int i=0; i<riqs.size();i++) {
 			System.out.print("[");
 			for(int j=0; j<riqs.size();j++) {
-				System.out.print(kgScheme[i][j][0][0]+",\t");
+				System.out.print(kgScheme[i][j][0][0]);
+				if((j+1)!=riqs.size()) {System.out.print(",\t");}
 			}
 			System.out.println("]");
 		}
@@ -69,7 +92,8 @@ public class Main {
 		for(int i=0; i<riqs.size();i++) {
 			System.out.print("[");
 			for(int j=0; j<riqs.size();j++) {
-				System.out.print(kgScheme[i][j][0][1]+",\t");
+				System.out.print(kgScheme[i][j][0][1]);
+				if((j+1)!=riqs.size()) {System.out.print(",\t");}
 			}
 			System.out.println("]");
 		}
@@ -161,9 +185,30 @@ public class Main {
 		} while(input == "y");
 		keyboard.close();
 		*/
+		try {
+			GUI window = new GUI();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public static void vlanSchemeBuilder(int numRIQs, int base) throws IllegalArgumentException {
+	public static String[][] getIPScheme(int type) throws IllegalArgumentException {
+		String[][] output = new String[riqs.size()][riqs.size()];
+		
+		if(!(type==0 || type==1)) {throw new IllegalArgumentException("Invalid Type (0 for UHF, 1 for Fiber Shot)");}
+		
+		for(int i=0; i<riqs.size(); i++) {
+			for(int j=0; j<riqs.size(); j++) {
+				output[i][j] = ipScheme[i][j][type];
+			}
+		}
+		
+		return output;
+	}
+	
+	public static void vlanSchemeBuilder(int base) throws IllegalArgumentException {
+		int numRIQs = riqs.size();
 		vlanScheme = new int[numRIQs][numRIQs];
 		int count = base;
 		for(int i=0;i<numRIQs;i++) {
@@ -174,39 +219,39 @@ public class Main {
 		}
 	}
 	
-	public static void ipSchemeBuilder(int numRIQs, int type, String baseIP) {
+	public static void ipSchemeBuilder(int type, String baseIP) {
 		int count;
+		int numRIQs = riqs.size();
 		String base;
+		if(ipScheme==null) {ipScheme = new String[numRIQs][numRIQs][2];}
 		
 		switch(type) {
 		case Link.UHF:
-			ipScheme_UHF = new String[numRIQs][numRIQs];
 			count = 0;
 			base = 	(baseIP.split("\\."))[0]+"."+
 					(baseIP.split("\\."))[1]+".";
 			for(int i=0;i<numRIQs;i++) {
 				for(int j=0;j<numRIQs;j++) {
-					if(i==j) {ipScheme_UHF[i][j]="0.0.0.0";}
+					if(i==j) {ipScheme[i][j][Link.UHF]="0.0.0.0";}
 					else {
-						if(count==0) {ipScheme_UHF[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat(".41"));}
-						else {ipScheme_UHF[i][j]=(base.concat(Integer.toString(vlanScheme[i][j])).concat("."+Integer.toString(count)));}
+						if(count==0) {ipScheme[i][j][Link.UHF]=(base.concat(Integer.toString(vlanScheme[i][j])).concat(".41"));}
+						else {ipScheme[i][j][Link.UHF]=(base.concat(Integer.toString(vlanScheme[i][j])).concat("."+Integer.toString(count)));}
 					}
 				}
 				count++;
 			}
 			break;
 		case Link.PPN:
-			ipScheme_PPN = new String[numRIQs][numRIQs];
 			count = 0;
 			base = 	(baseIP.split("\\."))[0]+"."+
 					(baseIP.split("\\."))[1]+"."+
 					(baseIP.split("\\."))[2]+".";
 			for(int i=0;i<numRIQs;i++) {
 				for(int j=0;j<numRIQs;j++) {
-					if(i==j) {ipScheme_PPN[i][j]="0.0.0.0";}
+					if(i==j) {ipScheme[i][j][Link.PPN]="0.0.0.0";}
 					else {
-						if(count==0) {ipScheme_PPN[i][j]=base.concat("41");}
-						else {ipScheme_PPN[i][j]=base.concat(Integer.toString(count));}
+						if(count==0) {ipScheme[i][j][Link.PPN]=base.concat("41");}
+						else {ipScheme[i][j][Link.PPN]=base.concat(Integer.toString(count));}
 					}
 				}
 				count++;
@@ -218,16 +263,17 @@ public class Main {
 	}
 	
 	public static void kgSchemeBuilder(String baseIP) {
-		if(ipScheme_PPN == null) {return;}
-		int length = ipScheme_PPN[0].length;
+		if(ipScheme == null) {return;}
+		int length = riqs.size();
 		kgScheme = new String[length][length][2][2];
 		
 		
 		for(int i=0;i<length;i++) {
 			for(int j=0;j<length;j++) {
-				String[] ip = (ipScheme_PPN[i][j]).split("\\.");
+				String[] ip = (ipScheme[i][j][Link.PPN]).split("\\.");
 				kgScheme[i][j][0][0] = ip[0]+"."+ip[1]+"."+ip[2]+"."+Integer.toString(Integer.valueOf(ip[3])+100);
-				kgScheme[i][j][1][0] = ip[0]+"."+ip[1]+"."+ip[2]+"."+"2"+Integer.toString(Integer.valueOf(ip[3])+100);
+				kgScheme[i][j][1][0] = ip[0]+"."+ip[1]+"."+ip[2]+"."+Integer.toString(Integer.valueOf(ip[3])+200);
+				if(ipScheme[i][j][Link.PPN]=="0.0.0.0") {kgScheme[i][j][0][0]=kgScheme[i][j][1][0]="0.0.0.0";}
 			}				
 		}
 		
@@ -239,7 +285,7 @@ public class Main {
 			for(int j=0;j<length;j++) {
 				if(count==16) {count++;}
 				kgScheme[i][j][0][1]=base.concat(Integer.toString(count));
-				kgScheme[i][j][1][1]=base.concat(Integer.toString(count+ipScheme_PPN[0].length));
+				kgScheme[i][j][1][1]=base.concat(Integer.toString(count+riqs.size()));
 			}
 			count++;
 		}
@@ -256,13 +302,22 @@ public class Main {
 		}
 	}
 	
-	//public KG175D(String name, String ptIP, String ptGW, String ctIP, String ctGW)
-	public static void initialization() {
+	
+	public static void initialization(int baseVLAN, String basePPN, String baseUHF, String baseKG) {
+		System.out.println(riqs);
+		
+		vlanSchemeBuilder(baseVLAN);
+		ipSchemeBuilder(Link.UHF, baseUHF);
+		ipSchemeBuilder(Link.PPN, basePPN);
+		kgSchemeBuilder(baseKG);
+		portSchemeBuilder();
+		
 		links = new ArrayList<Link>();
 		
+		// Setup KGs for every RIQ
 		for(RIQ riq : riqs) {
-			riq.setKGs(new KG175D[] {new KG175D(riq.getName().concat("LeftKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][0],"0.0.0.0",kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][1],kgGateway),
-					new KG175D(riq.getName().concat("RightKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][0],"0.0.0.0",kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][1],kgGateway)});
+			riq.setKGs(new KG175D[] {new KG175D(riq.getName().concat("LeftKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][0],getIPScheme(Link.PPN)[riqs.indexOf(riq)][riqs.indexOf(riq)],kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][1],kgGateway),
+					new KG175D(riq.getName().concat("RightKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][0],getIPScheme(Link.PPN)[riqs.indexOf(riq)][riqs.indexOf(riq)],kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][1],kgGateway)});
 		}
 	}
 

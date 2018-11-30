@@ -9,19 +9,6 @@ public class GUI {
 	protected Shell shlRiqbuilder;
 
 	/**
-	 * Launch the application.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		try {
-			GUI window = new GUI();
-			window.open();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Open the window.
 	 */
 	public void open() {

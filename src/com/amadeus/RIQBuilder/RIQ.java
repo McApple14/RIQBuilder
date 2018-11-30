@@ -2,7 +2,7 @@ package com.amadeus.RIQBuilder;
 
 import java.util.*;
 
-public class RIQ {
+public class RIQ implements Comparable<RIQ> {
 	private String name;
 	private ArrayList<String> clients;
 	private ArrayList<Link> links;
@@ -85,5 +85,9 @@ public class RIQ {
 	
 	public String toString() {
 		return name;
+	}
+	
+	public int compareTo(RIQ other) {
+		return name.compareTo(other.getName());
 	}
 }
