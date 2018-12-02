@@ -128,6 +128,7 @@ public class RIQBuilder {
 		System.out.println();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public RIQBuilder (RIQBuilder another) {
 		this.ipScheme = another.ipScheme.clone();
 		this.kgScheme = another.kgScheme.clone(); 

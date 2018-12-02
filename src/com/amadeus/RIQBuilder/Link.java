@@ -206,6 +206,7 @@ public class Link implements Comparable<Link>{
 		remoteRIQ.clientSABuilder(this);
 	}
 	
+	// Returns NAME,DESCRIPTION,INTERFACECES,LOCALIP,LOCALUDP,SUBNETMASK,VLAN,IP_TTL,PDV_BUFFER,ADMIN_STATUS,CES_TYPE,PACKETINTERFACE,REMOTEIP,REMOTEUDP,GATEWAYIP,P_BIT,DSCP
 	public String toString() {
 		derivation();
 		return name+","+description+","+interfaceCES+","+localIP+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+

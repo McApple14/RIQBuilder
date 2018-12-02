@@ -22,7 +22,7 @@ public class RIQ implements Comparable<RIQ> {
 		this.name = name;
 		clients = new ArrayList<String>();
 		links = new ArrayList<Link>();
-		isHub = false;
+		setHub(false);
 		initialized = false;
 	}
 	
@@ -32,16 +32,22 @@ public class RIQ implements Comparable<RIQ> {
 		links = new ArrayList<Link>();
 		this.kg1 = kg1;
 		this.kg2 = kg2;
-		isHub = false;
+		setHub(false);
 		initialized = false;
 	}
 	
-	public void setName(String in) {name=in;}
+	public void setName(String name) {this.name=name;}
+	public String getName() {return name;}
+	
 	public void setKGs(KG175D[] kgs) {kg1=kgs[0];kg2=kgs[1];}
+	public KG175D[] getKGs() {return new KG175D[] {kg1, kg2};}
+	
 	public void initialized(boolean bool) {initialized=bool;}
 	public boolean isInitialized() {return initialized;}
-	public String getName() {return name;}
-	public KG175D[] getKGs() {return new KG175D[] {kg1, kg2};}
+	
+	public void setHub(boolean isHub) {this.isHub = isHub;}
+	public boolean isHub() {return isHub;}
+	
 	public ArrayList<Link> getLinks() {return links;}
 	
 	public boolean addClient(String in) {

@@ -19,7 +19,6 @@ import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
@@ -30,6 +29,7 @@ public class GUI {
 	
 	protected Shell shlRiqbuilder;
 	protected Shell childShellRIQWizard;
+	protected Shell childShellLinkWizard;
 	private Table riqTable;
 	private ScrolledComposite scrolledComposite;
 	private TableColumn tblclmnName;
@@ -130,7 +130,7 @@ public class GUI {
 	protected void childShellRIQWizard() {
 		childShellRIQWizard = new Shell();
 		childShellRIQWizard.setSize(700, 400);
-		childShellRIQWizard.setText("SWT Application");
+		childShellRIQWizard.setText("Add RIQ");
 		
 		Label lblNewLabel = new Label(childShellRIQWizard, SWT.NONE);
 		lblNewLabel.setBounds(25, 30, 55, 15);
@@ -289,9 +289,134 @@ public class GUI {
 		btnAutoCalc.setBounds(544, 80, 130, 37);
 	}
 	
+	protected void childShellLinkWizard() {
+		childShellLinkWizard = new Shell();
+		childShellLinkWizard.setSize(700, 400);
+		childShellLinkWizard.setText("Add Link");
+		
+		Label lblName = new Label(childShellLinkWizard, SWT.NONE);
+		lblName.setBounds(40, 40, 100, 20);
+		lblName.setText("Name:");
+		
+		Text textName = new Text(childShellLinkWizard, SWT.BORDER);
+		textName.setBounds(150, 40, 100, 20);
+		
+		Text textDescription = new Text(childShellLinkWizard, SWT.BORDER);
+		textDescription.setBounds(150, 70, 100, 20);
+		
+		Label lblDescription = new Label(childShellLinkWizard, SWT.NONE);
+		lblDescription.setText("Description:");
+		lblDescription.setBounds(40, 70, 100, 20);
+		
+		Text textCESInterface = new Text(childShellLinkWizard, SWT.BORDER);
+		textCESInterface.setBounds(150, 100, 100, 20);
+		
+		Label lblCesInterface = new Label(childShellLinkWizard, SWT.NONE);
+		lblCesInterface.setText("CES Interface:");
+		lblCesInterface.setBounds(40, 100, 100, 20);
+		
+		Text textLocalIP = new Text(childShellLinkWizard, SWT.BORDER);
+		textLocalIP.setBounds(150, 130, 100, 20);
+		
+		Label lblLocalIpAddress = new Label(childShellLinkWizard, SWT.NONE);
+		lblLocalIpAddress.setText("Local IP Address:");
+		lblLocalIpAddress.setBounds(40, 130, 100, 20);
+		
+		Text textLocalUDP = new Text(childShellLinkWizard, SWT.BORDER);
+		textLocalUDP.setBounds(150, 160, 100, 20);
+		
+		Label lblLocalUdpPort = new Label(childShellLinkWizard, SWT.NONE);
+		lblLocalUdpPort.setText("Local UDP Port:");
+		lblLocalUdpPort.setBounds(40, 160, 100, 20);
+		
+		Text textSubnet = new Text(childShellLinkWizard, SWT.BORDER);
+		textSubnet.setBounds(150, 190, 100, 20);
+		
+		Label lblSubnetMask = new Label(childShellLinkWizard, SWT.NONE);
+		lblSubnetMask.setText("Subnet Mask:");
+		lblSubnetMask.setBounds(40, 190, 100, 20);
+		
+		Text textVLAN = new Text(childShellLinkWizard, SWT.BORDER);
+		textVLAN.setBounds(150, 220, 100, 20);
+		
+		Label lblVlan = new Label(childShellLinkWizard, SWT.NONE);
+		lblVlan.setText("VLAN:");
+		lblVlan.setBounds(40, 220, 100, 20);
+		
+		Label lblIpTtl = new Label(childShellLinkWizard, SWT.NONE);
+		lblIpTtl.setText("IP TTL:");
+		lblIpTtl.setBounds(40, 250, 100, 20);
+		
+		Text textIPTTL = new Text(childShellLinkWizard, SWT.BORDER);
+		textIPTTL.setBounds(150, 250, 100, 20);
+		
+		Text textRemotePDV = new Text(childShellLinkWizard, SWT.BORDER);
+		textRemotePDV.setBounds(150, 280, 100, 20);
+		
+		Label lblRemotePdvBuffer = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemotePdvBuffer.setText("Remote PDV Buffer:");
+		lblRemotePdvBuffer.setBounds(40, 280, 110, 20);
+		
+		Label lblAdminStatus = new Label(childShellLinkWizard, SWT.NONE);
+		lblAdminStatus.setText("Admin Status:");
+		lblAdminStatus.setBounds(285, 40, 100, 20);
+		
+		Text textAdminStatus = new Text(childShellLinkWizard, SWT.BORDER);
+		textAdminStatus.setBounds(410, 40, 100, 20);
+		
+		Text textCESType = new Text(childShellLinkWizard, SWT.BORDER);
+		textCESType.setBounds(410, 70, 100, 20);
+		
+		Label lblCesType = new Label(childShellLinkWizard, SWT.NONE);
+		lblCesType.setText("CES Type:");
+		lblCesType.setBounds(285, 70, 100, 20);
+		
+		Text textPacketInterface = new Text(childShellLinkWizard, SWT.BORDER);
+		textPacketInterface.setBounds(410, 100, 100, 20);
+		
+		Label lblPacketInterface = new Label(childShellLinkWizard, SWT.NONE);
+		lblPacketInterface.setText("Packet Interface:");
+		lblPacketInterface.setBounds(285, 100, 100, 20);
+		
+		Text textRemoteIP = new Text(childShellLinkWizard, SWT.BORDER);
+		textRemoteIP.setBounds(410, 130, 100, 20);
+		
+		Label lblRemoteIpAddress = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemoteIpAddress.setText("Remote IP Address:");
+		lblRemoteIpAddress.setBounds(285, 130, 100, 20);
+		
+		Text textRemoteUDP = new Text(childShellLinkWizard, SWT.BORDER);
+		textRemoteUDP.setBounds(410, 160, 100, 20);
+		
+		Label lblRemoteUdpPort = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemoteUdpPort.setText("Remote UDP Port:");
+		lblRemoteUdpPort.setBounds(285, 160, 100, 20);
+		
+		Text textGatewayIP = new Text(childShellLinkWizard, SWT.BORDER);
+		textGatewayIP.setBounds(410, 190, 100, 20);
+		
+		Label lblGatewayIpAddress = new Label(childShellLinkWizard, SWT.NONE);
+		lblGatewayIpAddress.setText("Gateway IP Address:");
+		lblGatewayIpAddress.setBounds(285, 190, 110, 20);
+		
+		Text textPBit = new Text(childShellLinkWizard, SWT.BORDER);
+		textPBit.setBounds(410, 220, 100, 20);
+		
+		Label lblPbitValue = new Label(childShellLinkWizard, SWT.NONE);
+		lblPbitValue.setText("P-Bit Value:");
+		lblPbitValue.setBounds(285, 220, 100, 20);
+		
+		Label lblDscp = new Label(childShellLinkWizard, SWT.NONE);
+		lblDscp.setText("DSCP:");
+		lblDscp.setBounds(285, 250, 100, 20);
+		
+		Text textDSCP = new Text(childShellLinkWizard, SWT.BORDER);
+		textDSCP.setBounds(410, 250, 100, 20);
+	}
 	
 	
-	public static void initTable(Table t) {
+	
+	public void initTable(Table t) {
 		t.removeAll();
 		for(RIQ riq : builder.getRIQs()) {
 			TableItem tableItem = new TableItem(t, SWT.NONE);
@@ -302,7 +427,7 @@ public class GUI {
 		tableListeners(t);
 	}
 	
-	public static void tableListeners(Table t) {
+	public void tableListeners(Table t) {
 		final Menu menu = new Menu(t);
 		t.setMenu(menu);
 		menu.addMenuListener(new MenuAdapter() {
@@ -324,8 +449,15 @@ public class GUI {
 				newItem.setText("Add link to "+t.getSelection()[0].getText());
 				newItem.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
-						System.out.println("Remove "+t.getSelection()[0].getText());
-						if(builder.removeRIQ(t.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
+						System.out.println("Opening Link Wizard for  "+t.getSelection()[0].getText());
+						childShellLinkWizard();
+						childShellLinkWizard.open();
+						childShellLinkWizard.layout();
+						while (!childShellLinkWizard.isDisposed()) {
+							if (!display.readAndDispatch()) {
+								display.sleep();
+							}
+						}
 						initTable(t);
 					}
 				});
