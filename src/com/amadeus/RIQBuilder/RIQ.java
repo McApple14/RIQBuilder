@@ -9,11 +9,13 @@ public class RIQ implements Comparable<RIQ> {
 	private KG175D kg1;
 	private KG175D kg2;
 	private boolean isHub;
+	private boolean initialized;
 	
 	
 	public RIQ() {
 		clients = new ArrayList<String>();
 		links = new ArrayList<Link>();
+		initialized = false;
 	}
 	
 	public RIQ(String name) {
@@ -21,6 +23,7 @@ public class RIQ implements Comparable<RIQ> {
 		clients = new ArrayList<String>();
 		links = new ArrayList<Link>();
 		isHub = false;
+		initialized = false;
 	}
 	
 	public RIQ(String name, KG175D kg1, KG175D kg2) {
@@ -30,13 +33,16 @@ public class RIQ implements Comparable<RIQ> {
 		this.kg1 = kg1;
 		this.kg2 = kg2;
 		isHub = false;
+		initialized = false;
 	}
 	
 	public void setName(String in) {name=in;}
 	public void setKGs(KG175D[] kgs) {kg1=kgs[0];kg2=kgs[1];}
-	
+	public void initialized(boolean bool) {initialized=bool;}
+	public boolean isInitialized() {return initialized;}
 	public String getName() {return name;}
 	public KG175D[] getKGs() {return new KG175D[] {kg1, kg2};}
+	public ArrayList<Link> getLinks() {return links;}
 	
 	public boolean addClient(String in) {
 		String IP = Link.ipValidation(in);
