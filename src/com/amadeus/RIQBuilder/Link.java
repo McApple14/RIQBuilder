@@ -13,7 +13,7 @@ public class Link implements Comparable<Link>{
 	private int remoteUDP;
 	private int type; // 0 for UHF; 1 for PPN
 	private String interfaceCES;
-	private static final Pattern PATTERN_INT = Pattern.compile("^[13]\\:[13]$");
+	private static final Pattern PATTERN_INT = Pattern.compile("^[123]\\:[1234]$");
 	private static final Pattern PATTERN_IP = Pattern.compile(
 			"^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 	private static final Pattern PATTERN_SUBNET = Pattern.compile(
@@ -24,18 +24,19 @@ public class Link implements Comparable<Link>{
 	private String packetInterface;
 	private String gatewayIP;
 	private String description;
+	private boolean adminStatus;
 	
 	//Constants
 	public static final int UHF = 0;
 	public static final int PPN = 1;
 	public static final int UHF_PORT = 50000;
 	//private static final int PPN_VLAN = 150;
-	private static final int IP_TTL = 1;
-	private static final String PDV_BUFFER = "Low";
-	private static final boolean ADMIN_STATUS = true;
-	private static final String CES_TYPE = "Serial";
-	private static final int P_BIT = 6;
-	private static final int DSCP = 43;
+	public static final int IP_TTL = 1;
+	public static final String PDV_BUFFER = "Low";
+	public static final boolean ADMIN_STATUS = true;
+	public static final String CES_TYPE = "Serial";
+	public static final int P_BIT = 6;
+	public static final int DSCP = 43;
 	
 	
 	public Link() {}
@@ -69,6 +70,7 @@ public class Link implements Comparable<Link>{
 		this.subnetMask = subnetMaskValidation(subnetMask);
 		this.vLAN = vLAN;
 		this.kg175d = kg175d;
+		this.adminStatus = true;
 	}
 	
 	/**
@@ -97,6 +99,7 @@ public class Link implements Comparable<Link>{
 		this.vLAN = vLAN;
 		this.kg175d = kg175d;
 		localUDP = remoteUDP = udpPort;
+		this.adminStatus = true;
 	}
 	
 	/**
@@ -127,6 +130,7 @@ public class Link implements Comparable<Link>{
 		this.kg175d = kg175d;
 		localUDP = localPort;
 		remoteUDP = remotePort;
+		this.adminStatus = true;
 	}
 	
 	/**
@@ -200,6 +204,8 @@ public class Link implements Comparable<Link>{
 	public String getGatewayIP() {return gatewayIP;}
 	public String getDescription() {return description;}
 	public int getSideKG() {return kg175d;}
+	public boolean getAdminStatus() {return adminStatus;}
+	public void setAdminStatus(boolean adminStatus) {this.adminStatus = adminStatus;}
 	
 	public void buildSAs() {
 		localRIQ.clientSABuilder(this);
@@ -210,8 +216,8 @@ public class Link implements Comparable<Link>{
 	public String toString() {
 		derivation();
 		return name+","+description+","+interfaceCES+","+localIP+","+localUDP+","+subnetMask+","+vLAN+","+IP_TTL+","+
-				PDV_BUFFER+","+ADMIN_STATUS+","+CES_TYPE+","+packetInterface+","+remoteIP+","+remoteUDP+","+gatewayIP+","+
-				P_BIT+","+DSCP;
+				PDV_BUFFER+","+ (adminStatus ? "Up" : "Down") +","+CES_TYPE+","+packetInterface+","+remoteIP+","+remoteUDP+","+
+				gatewayIP+","+P_BIT+","+DSCP;
 	}
 	
 	public int compareTo(Link other) {

@@ -1,8 +1,11 @@
 package com.amadeus.RIQBuilder;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -10,6 +13,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
@@ -133,22 +137,22 @@ public class GUI {
 		childShellRIQWizard.setText("Add RIQ");
 		
 		Label lblNewLabel = new Label(childShellRIQWizard, SWT.NONE);
-		lblNewLabel.setBounds(25, 30, 55, 15);
+		lblNewLabel.setBounds(25, 30, 55, 20);
 		lblNewLabel.setText("Name:");
 		
 		Label lblLeftKgd = new Label(childShellRIQWizard, SWT.NONE);
 		lblLeftKgd.setText("Left KG175D");
-		lblLeftKgd.setBounds(25, 84, 80, 15);
+		lblLeftKgd.setBounds(25, 84, 101, 20);
 		
 		Label lblRightKgd = new Label(childShellRIQWizard, SWT.NONE);
 		lblRightKgd.setText("Right KG175D");
-		lblRightKgd.setBounds(289, 84, 80, 15);
+		lblRightKgd.setBounds(289, 84, 101, 20);
 		
 		Label label = new Label(childShellRIQWizard, SWT.SEPARATOR | SWT.VERTICAL);
 		label.setBounds(259, 84, 2, 265);
 		
 		Label lblPTIPLeft = new Label(childShellRIQWizard, SWT.NONE);
-		lblPTIPLeft.setBounds(25, 130, 80, 15);
+		lblPTIPLeft.setBounds(25, 130, 80, 20);
 		lblPTIPLeft.setText("PT IP: ");
 		
 		Text textName = new Text(childShellRIQWizard, SWT.BORDER);
@@ -162,32 +166,32 @@ public class GUI {
 		
 		Label lblPTGWLeft = new Label(childShellRIQWizard, SWT.NONE);
 		lblPTGWLeft.setText("PT Gateway: ");
-		lblPTGWLeft.setBounds(25, 180, 80, 15);
+		lblPTGWLeft.setBounds(25, 180, 80, 20);
 		
 		Text leftCTIP = new Text(childShellRIQWizard, SWT.BORDER);
 		leftCTIP.setBounds(130, 230, 101, 21);
 		
 		Label lblCTIPLeft = new Label(childShellRIQWizard, SWT.NONE);
 		lblCTIPLeft.setText("CT IP: ");
-		lblCTIPLeft.setBounds(25, 230, 80, 15);
+		lblCTIPLeft.setBounds(25, 230, 80, 20);
 		
 		Text leftCTGW = new Text(childShellRIQWizard, SWT.BORDER);
 		leftCTGW.setBounds(130, 280, 101, 21);
 		
 		Label lblCTGWLeft = new Label(childShellRIQWizard, SWT.NONE);
 		lblCTGWLeft.setText("CT Gateway: ");
-		lblCTGWLeft.setBounds(25, 280, 80, 15);
+		lblCTGWLeft.setBounds(25, 280, 80, 20);
 		
 		Label label_1 = new Label(childShellRIQWizard, SWT.NONE);
 		label_1.setText("PT IP: ");
-		label_1.setBounds(289, 130, 80, 15);
+		label_1.setBounds(289, 130, 80, 20);
 		
 		Text rightPTIP = new Text(childShellRIQWizard, SWT.BORDER);
 		rightPTIP.setBounds(394, 130, 101, 21);
 		
 		Label label_2 = new Label(childShellRIQWizard, SWT.NONE);
 		label_2.setText("PT Gateway: ");
-		label_2.setBounds(289, 180, 80, 15);
+		label_2.setBounds(289, 180, 80, 20);
 		
 		Text rightPTGW = new Text(childShellRIQWizard, SWT.BORDER);
 		rightPTGW.setBounds(394, 180, 101, 21);
@@ -197,11 +201,11 @@ public class GUI {
 		
 		Label label_3 = new Label(childShellRIQWizard, SWT.NONE);
 		label_3.setText("CT IP: ");
-		label_3.setBounds(289, 230, 80, 15);
+		label_3.setBounds(289, 230, 80, 20);
 		
 		Label label_4 = new Label(childShellRIQWizard, SWT.NONE);
 		label_4.setText("CT Gateway: ");
-		label_4.setBounds(289, 280, 80, 15);
+		label_4.setBounds(289, 280, 80, 20);
 		
 		Text rightCTGW = new Text(childShellRIQWizard, SWT.BORDER);
 		rightCTGW.setBounds(394, 280, 101, 21);
@@ -235,6 +239,7 @@ public class GUI {
 				builder.addRIQ(new RIQ(input[0],
 						new KG175D(input[0].concat("LeftKG"),input[1],input[2],input[3],input[4]),
 						new KG175D(input[0].concat("RightKG"),input[5],input[6],input[7],input[8])));
+				builder.reInitialization(true);				
 				System.out.println("RIQS: "+builder.getRIQs());
 				childShellRIQWizard.dispose();
 			}
@@ -270,7 +275,7 @@ public class GUI {
 					System.out.println("TEMP has "+temp.getRIQs().size()+" RIQS");
 					temp.addRIQ(new RIQ(name));
 					System.out.println("TEMP has "+temp.getRIQs().size()+" RIQS");
-					temp.reInitialization();
+					temp.reInitialization(false);
 					System.out.println("TEMP has "+temp.getRIQs().size()+" RIQS");
 					
 					RIQ riq = temp.getRIQ(name);
@@ -286,132 +291,774 @@ public class GUI {
 			}
 		});
 		btnAutoCalc.setText("Auto Calc");
-		btnAutoCalc.setBounds(544, 80, 130, 37);
+		btnAutoCalc.setBounds(544, 80, 130, 	37);
 	}
 	
 	protected void childShellLinkWizard() {
 		childShellLinkWizard = new Shell();
-		childShellLinkWizard.setSize(700, 400);
+		childShellLinkWizard.setSize(700, 450);
 		childShellLinkWizard.setText("Add Link");
 		
+		Combo comboRemoteRIQ = new Combo(childShellLinkWizard, SWT.NONE);
+		comboRemoteRIQ.setBounds(445, 10, 100, 25);
+		
+		Combo comboLocalRIQ = new Combo(childShellLinkWizard, SWT.NONE);
+		comboLocalRIQ.setBounds(171, 10, 100, 25);
+		
 		Label lblName = new Label(childShellLinkWizard, SWT.NONE);
-		lblName.setBounds(40, 40, 100, 20);
+		lblName.setBounds(30, 120, 100, 20);
 		lblName.setText("Name:");
 		
 		Text textName = new Text(childShellLinkWizard, SWT.BORDER);
-		textName.setBounds(150, 40, 100, 20);
+		textName.setBounds(171, 120, 100, 20);
 		
 		Text textDescription = new Text(childShellLinkWizard, SWT.BORDER);
-		textDescription.setBounds(150, 70, 100, 20);
+		textDescription.setBounds(171, 150, 100, 20);
 		
 		Label lblDescription = new Label(childShellLinkWizard, SWT.NONE);
 		lblDescription.setText("Description:");
-		lblDescription.setBounds(40, 70, 100, 20);
+		lblDescription.setBounds(30, 150, 100, 20);
 		
 		Text textCESInterface = new Text(childShellLinkWizard, SWT.BORDER);
-		textCESInterface.setBounds(150, 100, 100, 20);
+		textCESInterface.setBounds(171, 180, 100, 20);
 		
 		Label lblCesInterface = new Label(childShellLinkWizard, SWT.NONE);
 		lblCesInterface.setText("CES Interface:");
-		lblCesInterface.setBounds(40, 100, 100, 20);
+		lblCesInterface.setBounds(30, 180, 100, 20);
 		
 		Text textLocalIP = new Text(childShellLinkWizard, SWT.BORDER);
-		textLocalIP.setBounds(150, 130, 100, 20);
+		textLocalIP.setBounds(171, 210, 100, 20);
 		
 		Label lblLocalIpAddress = new Label(childShellLinkWizard, SWT.NONE);
 		lblLocalIpAddress.setText("Local IP Address:");
-		lblLocalIpAddress.setBounds(40, 130, 100, 20);
+		lblLocalIpAddress.setBounds(30, 210, 122, 20);
 		
 		Text textLocalUDP = new Text(childShellLinkWizard, SWT.BORDER);
-		textLocalUDP.setBounds(150, 160, 100, 20);
+		textLocalUDP.setBounds(171, 240, 100, 20);
 		
 		Label lblLocalUdpPort = new Label(childShellLinkWizard, SWT.NONE);
 		lblLocalUdpPort.setText("Local UDP Port:");
-		lblLocalUdpPort.setBounds(40, 160, 100, 20);
+		lblLocalUdpPort.setBounds(30, 240, 122, 20);
 		
 		Text textSubnet = new Text(childShellLinkWizard, SWT.BORDER);
-		textSubnet.setBounds(150, 190, 100, 20);
+		textSubnet.setBounds(171, 270, 100, 20);
 		
 		Label lblSubnetMask = new Label(childShellLinkWizard, SWT.NONE);
 		lblSubnetMask.setText("Subnet Mask:");
-		lblSubnetMask.setBounds(40, 190, 100, 20);
+		lblSubnetMask.setBounds(30, 270, 100, 20);
 		
 		Text textVLAN = new Text(childShellLinkWizard, SWT.BORDER);
-		textVLAN.setBounds(150, 220, 100, 20);
+		textVLAN.setBounds(171, 300, 100, 20);
 		
 		Label lblVlan = new Label(childShellLinkWizard, SWT.NONE);
 		lblVlan.setText("VLAN:");
-		lblVlan.setBounds(40, 220, 100, 20);
+		lblVlan.setBounds(30, 300, 100, 20);
 		
 		Label lblIpTtl = new Label(childShellLinkWizard, SWT.NONE);
 		lblIpTtl.setText("IP TTL:");
-		lblIpTtl.setBounds(40, 250, 100, 20);
+		lblIpTtl.setBounds(30, 330, 100, 20);
 		
 		Text textIPTTL = new Text(childShellLinkWizard, SWT.BORDER);
-		textIPTTL.setBounds(150, 250, 100, 20);
+		textIPTTL.setEditable(false);
+		textIPTTL.setBounds(171, 330, 100, 20);
+		textIPTTL.setText(Integer.toString(Link.IP_TTL));
 		
 		Text textRemotePDV = new Text(childShellLinkWizard, SWT.BORDER);
-		textRemotePDV.setBounds(150, 280, 100, 20);
+		textRemotePDV.setEditable(false);
+		textRemotePDV.setBounds(171, 360, 100, 20);
+		textRemotePDV.setText(Link.PDV_BUFFER);
 		
 		Label lblRemotePdvBuffer = new Label(childShellLinkWizard, SWT.NONE);
 		lblRemotePdvBuffer.setText("Remote PDV Buffer:");
-		lblRemotePdvBuffer.setBounds(40, 280, 110, 20);
+		lblRemotePdvBuffer.setBounds(30, 360, 135, 20);
 		
 		Label lblAdminStatus = new Label(childShellLinkWizard, SWT.NONE);
 		lblAdminStatus.setText("Admin Status:");
-		lblAdminStatus.setBounds(285, 40, 100, 20);
-		
-		Text textAdminStatus = new Text(childShellLinkWizard, SWT.BORDER);
-		textAdminStatus.setBounds(410, 40, 100, 20);
+		lblAdminStatus.setBounds(300, 120, 100, 20);
 		
 		Text textCESType = new Text(childShellLinkWizard, SWT.BORDER);
-		textCESType.setBounds(410, 70, 100, 20);
+		textCESType.setEditable(false);
+		textCESType.setBounds(445, 150, 100, 20);
+		textCESType.setText(Link.CES_TYPE);
 		
 		Label lblCesType = new Label(childShellLinkWizard, SWT.NONE);
 		lblCesType.setText("CES Type:");
-		lblCesType.setBounds(285, 70, 100, 20);
+		lblCesType.setBounds(300, 150, 100, 20);
 		
 		Text textPacketInterface = new Text(childShellLinkWizard, SWT.BORDER);
-		textPacketInterface.setBounds(410, 100, 100, 20);
+		textPacketInterface.setBounds(445, 180, 100, 20);
 		
 		Label lblPacketInterface = new Label(childShellLinkWizard, SWT.NONE);
 		lblPacketInterface.setText("Packet Interface:");
-		lblPacketInterface.setBounds(285, 100, 100, 20);
+		lblPacketInterface.setBounds(300, 180, 129, 20);
 		
 		Text textRemoteIP = new Text(childShellLinkWizard, SWT.BORDER);
-		textRemoteIP.setBounds(410, 130, 100, 20);
+		textRemoteIP.setBounds(445, 210, 100, 20);
 		
 		Label lblRemoteIpAddress = new Label(childShellLinkWizard, SWT.NONE);
 		lblRemoteIpAddress.setText("Remote IP Address:");
-		lblRemoteIpAddress.setBounds(285, 130, 100, 20);
+		lblRemoteIpAddress.setBounds(300, 210, 129, 20);
 		
 		Text textRemoteUDP = new Text(childShellLinkWizard, SWT.BORDER);
-		textRemoteUDP.setBounds(410, 160, 100, 20);
+		textRemoteUDP.setBounds(445, 240, 100, 20);
 		
 		Label lblRemoteUdpPort = new Label(childShellLinkWizard, SWT.NONE);
 		lblRemoteUdpPort.setText("Remote UDP Port:");
-		lblRemoteUdpPort.setBounds(285, 160, 100, 20);
+		lblRemoteUdpPort.setBounds(300, 240, 129, 20);
 		
 		Text textGatewayIP = new Text(childShellLinkWizard, SWT.BORDER);
-		textGatewayIP.setBounds(410, 190, 100, 20);
+		textGatewayIP.setBounds(445, 270, 100, 20);
 		
 		Label lblGatewayIpAddress = new Label(childShellLinkWizard, SWT.NONE);
 		lblGatewayIpAddress.setText("Gateway IP Address:");
-		lblGatewayIpAddress.setBounds(285, 190, 110, 20);
+		lblGatewayIpAddress.setBounds(300, 270, 139, 20);
 		
 		Text textPBit = new Text(childShellLinkWizard, SWT.BORDER);
-		textPBit.setBounds(410, 220, 100, 20);
-		
+		textPBit.setEditable(false);
+		textPBit.setBounds(445, 300, 100, 20);
+		textPBit.setText(Integer.toString(Link.P_BIT));
+	
 		Label lblPbitValue = new Label(childShellLinkWizard, SWT.NONE);
 		lblPbitValue.setText("P-Bit Value:");
-		lblPbitValue.setBounds(285, 220, 100, 20);
+		lblPbitValue.setBounds(300, 300, 100, 20);
 		
 		Label lblDscp = new Label(childShellLinkWizard, SWT.NONE);
 		lblDscp.setText("DSCP:");
-		lblDscp.setBounds(285, 250, 100, 20);
+		lblDscp.setBounds(300, 330, 100, 20);
 		
 		Text textDSCP = new Text(childShellLinkWizard, SWT.BORDER);
-		textDSCP.setBounds(410, 250, 100, 20);
+		textDSCP.setEditable(false);
+		textDSCP.setBounds(445, 330, 100, 20);
+		textDSCP.setText(Integer.toString(Link.DSCP));
+		
+		Combo comboAdminStatus = new Combo(childShellLinkWizard, SWT.NONE);
+		comboAdminStatus.setBounds(445, 120, 100, 25);
+		comboAdminStatus.add("Down",0);
+		comboAdminStatus.add("Up",1);
+		
+		Label lblLocalRiq = new Label(childShellLinkWizard, SWT.NONE);
+		lblLocalRiq.setBounds(30, 10, 69, 21);
+		lblLocalRiq.setText("Local RIQ:");
+		ArrayList<RIQ> riqs = builder.getRIQs();
+		for(RIQ riq : riqs) {
+			comboLocalRIQ.add(riq.getName());
+		}
+		
+		Label lblRemoteRiq = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemoteRiq.setText("Remote RIQ:");
+		lblRemoteRiq.setBounds(300, 10, 100, 21);
+		for(RIQ riq : riqs) {
+			comboRemoteRIQ.add(riq.getName());
+		}
+		
+		Label lblCesConfiguration = new Label(childShellLinkWizard, SWT.SEPARATOR | SWT.HORIZONTAL);
+		lblCesConfiguration.setText("CES Configuration");
+		lblCesConfiguration.setBounds(10, 105, 664, 9);
+		
+		Label lblShotType = new Label(childShellLinkWizard, SWT.NONE);
+		lblShotType.setText("Shot Type:");
+		lblShotType.setBounds(30, 55, 69, 21);
+		
+		Group group = new Group(childShellLinkWizard, SWT.NONE);
+		group.setBounds(169, 22, 113, 70);
+		
+		Button btnUHF = new Button(group, SWT.RADIO);
+		btnUHF.setBounds(2, 21, 110, 21);
+		btnUHF.setText("UHF");
+		btnUHF.setSelection(true);
+		
+		Button btnPPN = new Button(group, SWT.RADIO);
+		btnPPN.setBounds(2, 48, 110, 21);
+		btnPPN.setText("Fiber (PPN)");
+		
+		Label lblKgSelection = new Label(childShellLinkWizard, SWT.NONE);
+		lblKgSelection.setText("KG Selection: ");
+		lblKgSelection.setBounds(300, 55, 100, 21);
+		
+		Group group_1 = new Group(childShellLinkWizard, SWT.NONE);
+		group_1.setBounds(439, 22, 113, 70);
+		
+		Button btnLeft = new Button(group_1, SWT.RADIO);
+		btnLeft.setBounds(2, 21, 110, 21);
+		btnLeft.setText("Left");
+		btnLeft.setSelection(true);
+		
+		Button btnRight = new Button(group_1, SWT.RADIO);
+		btnRight.setBounds(2, 48, 110, 21);
+		btnRight.setText("Right");
+		
+		Button btnNewButton = new Button(childShellLinkWizard, SWT.NONE);
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				// String[] Input 	NAME,DESCRIPTION,INTERFACECES,LOCALIP,LOCALUDP,SUBNETMASK,VLAN,IP_TTL,PDV_BUFFER,ADMIN_STATUS,CES_TYPE,
+				// 					PACKETINTERFACE,REMOTEIP,REMOTEUDP,GATEWAYIP,P_BIT,DSCP
+				String[] input = new String[] {
+					textName.getText(),
+					textDescription.getText(),
+					Link.validateCESInterface(textCESInterface.getText()),
+					Link.ipValidation(textLocalIP.getText()),
+					textLocalUDP.getText(),
+					Link.subnetMaskValidation(textSubnet.getText()),
+					textVLAN.getText(),
+					textIPTTL.getText(),
+					textRemotePDV.getText(),
+					comboAdminStatus.getText(),
+					textCESType.getText(),
+					Link.validateCESInterface(textPacketInterface.getText()),
+					Link.ipValidation(textRemoteIP.getText()),
+					textRemoteUDP.getText(),
+					Link.ipValidation(textGatewayIP.getText()),
+					textPBit.getText(),
+					textDSCP.getText()
+				};
+				for (String s : input) {
+					System.out.print(s+", ");
+				}
+				
+				RIQ local = builder.getRIQ(comboLocalRIQ.getText());
+				RIQ remote = builder.getRIQ(comboRemoteRIQ.getText());
+				int type = btnUHF.getSelection() ? Link.UHF : (btnPPN.getSelection() ? Link.PPN : null);
+				int kg = btnLeft.getSelection() ? 0 : (btnRight.getSelection() ? 0 :null);
+				
+				/*
+				 * Link Constructor
+				 * @param name Name
+				 * @param localRIQ Local RIQ
+				 * @param localRIQ Remote RIQ
+				 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+				 * @param localIP Local IP Address
+				 * @param remoteIP Remote IP Address
+				 * @param interfaceCES CES Interface
+				 * @param vLAN VLAN
+				 * @param subnetMask Subnet Mask
+				 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+				 * @param udpPort UDP port for local AND remote RIQs
+				 */
+				if(input[4]==input[13]) {
+					builder.addLink(new Link(
+							input[0],
+							local,
+							remote,
+							type,
+							input[3],
+							input[12],
+							input[2],
+							Integer.parseInt(input[6]),
+							input[5],
+							kg,
+							Integer.parseInt(input[4])
+							));
+				}
+				else {
+					builder.addLink(new Link(
+							input[0],
+							local,
+							remote,
+							type,
+							input[3],
+							input[12],
+							input[2],
+							Integer.parseInt(input[6]),
+							input[5],
+							kg,
+							Integer.parseInt(input[4]),
+							Integer.parseInt(input[13])
+							));
+				}
+				childShellLinkWizard.dispose();
+			}
+		});
+		btnNewButton.setBounds(574, 120, 100, 50);
+		btnNewButton.setText("Add");
+		
+		Button btnAutoCalc = new Button(childShellLinkWizard, SWT.NONE);
+		btnAutoCalc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				// This'll be fun...
+				String[] input = new String[] {
+						textName.getText(),										// 0
+						textDescription.getText(),								// 1
+						Link.validateCESInterface(textCESInterface.getText()),	// 2
+						Link.ipValidation(textLocalIP.getText()),				// 3
+						textLocalUDP.getText(),									// 4
+						Link.subnetMaskValidation(textSubnet.getText()),		// 5
+						textVLAN.getText(),										// 6
+						textIPTTL.getText(),									// 7
+						textRemotePDV.getText(),								// 8
+						comboAdminStatus.getText(),								// 9
+						textCESType.getText(),									// 10
+						Link.validateCESInterface(textPacketInterface.getText()),//11
+						Link.ipValidation(textRemoteIP.getText()),				// 12
+						textRemoteUDP.getText(),								// 13
+						Link.ipValidation(textGatewayIP.getText()),				// 14
+						textPBit.getText(),										// 15
+						textDSCP.getText()										// 16
+					};
+				System.out.println(comboLocalRIQ.getText());
+				System.out.println(comboRemoteRIQ.getText());
+				
+				RIQ local = builder.getRIQ(comboLocalRIQ.getText());
+				RIQ remote = builder.getRIQ(comboRemoteRIQ.getText());
+				
+				System.out.println(local);
+				System.out.println(remote);
+				
+				int type = btnUHF.getSelection() ? Link.UHF : (btnPPN.getSelection() ? Link.PPN : null);
+				int kg = btnLeft.getSelection() ? 0 : (btnRight.getSelection() ? 0 :null);
+				Link test = builder.linkBuilder(
+						input[0]=="" ? local.getName()+" -> "+remote.getName() : input[0],
+						local,
+						remote,
+						type,
+						input[2]==null ? "1:1" : input[2],
+						input[5]==null ? (type==Link.UHF ? "255.255.255.0" : "255.255.0.0") : input[5],
+						kg);
+				System.out.println(test);
+				String[] output = test.toString().split(",");
+				// Put the link output to the window
+				textName.setText(output[0]);							// 0
+				textDescription.setText(output[1]);						// 1
+				textCESInterface.setText(output[2]);					// 2
+				textLocalIP.setText(output[3]);							// 3
+				textLocalUDP.setText(output[4]);						// 4
+				textSubnet.setText(output[5]);							// 5
+				textVLAN.setText(output[6]);							// 6
+				textIPTTL.setText(output[7]);							// 7
+				textRemotePDV.setText(output[8]);						// 8
+				comboAdminStatus.setText(output[9]);					// 9
+				textCESType.setText(output[10]);						// 10
+				textPacketInterface.setText(output[11]);				// 11
+				textRemoteIP.setText(output[12]);						// 12
+				textRemoteUDP.setText(output[13]);						// 13
+				textGatewayIP.setText(output[14]);						// 14
+				textPBit.setText(output[15]);							// 15
+				textDSCP.setText(output[16]);							// 16
+			}
+		});
+		btnAutoCalc.setText("Auto Calc");
+		btnAutoCalc.setBounds(574, 10, 100, 50);
+		
+		Button btnCancel = new Button(childShellLinkWizard, SWT.NONE);
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				childShellLinkWizard.dispose();
+			}
+		});
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(574, 240, 100, 50);
+		
+		Button btnClear = new Button(childShellLinkWizard, SWT.NONE);
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				textName.setText("");							// 0
+				textDescription.setText("");						// 1
+				textCESInterface.setText("");					// 2
+				textLocalIP.setText("");							// 3
+				textLocalUDP.setText("");						// 4
+				textSubnet.setText("");							// 5
+				textVLAN.setText("");							// 6
+				//textIPTTL.setText("");							// 7
+				//textRemotePDV.setText("");						// 8
+				comboAdminStatus.setText("");					// 9
+				//textCESType.setText("");						// 10
+				textPacketInterface.setText("");				// 11
+				textRemoteIP.setText("");						// 12
+				textRemoteUDP.setText("");						// 13
+				textGatewayIP.setText("");						// 14
+				//textPBit.setText("");							// 15
+				//textDSCP.setText("");							// 16
+			}
+		});
+		btnClear.setText("Clear");
+		btnClear.setBounds(574, 180, 100, 50);
+	}
+	
+	protected void childShellLinkWizard(RIQ localRIQ) {
+		childShellLinkWizard = new Shell();
+		childShellLinkWizard.setSize(700, 450);
+		childShellLinkWizard.setText("Add Link");
+		
+		Combo comboRemoteRIQ = new Combo(childShellLinkWizard, SWT.NONE);
+		comboRemoteRIQ.setBounds(445, 10, 100, 25);
+		
+		Combo comboLocalRIQ = new Combo(childShellLinkWizard, SWT.NONE);
+		comboLocalRIQ.setBounds(171, 10, 100, 25);
+		
+		Label lblName = new Label(childShellLinkWizard, SWT.NONE);
+		lblName.setBounds(30, 120, 100, 20);
+		lblName.setText("Name:");
+		
+		Text textName = new Text(childShellLinkWizard, SWT.BORDER);
+		textName.setBounds(171, 120, 100, 20);
+		
+		Text textDescription = new Text(childShellLinkWizard, SWT.BORDER);
+		textDescription.setBounds(171, 150, 100, 20);
+		
+		Label lblDescription = new Label(childShellLinkWizard, SWT.NONE);
+		lblDescription.setText("Description:");
+		lblDescription.setBounds(30, 150, 100, 20);
+		
+		Text textCESInterface = new Text(childShellLinkWizard, SWT.BORDER);
+		textCESInterface.setBounds(171, 180, 100, 20);
+		
+		Label lblCesInterface = new Label(childShellLinkWizard, SWT.NONE);
+		lblCesInterface.setText("CES Interface:");
+		lblCesInterface.setBounds(30, 180, 100, 20);
+		
+		Text textLocalIP = new Text(childShellLinkWizard, SWT.BORDER);
+		textLocalIP.setBounds(171, 210, 100, 20);
+		
+		Label lblLocalIpAddress = new Label(childShellLinkWizard, SWT.NONE);
+		lblLocalIpAddress.setText("Local IP Address:");
+		lblLocalIpAddress.setBounds(30, 210, 122, 20);
+		
+		Text textLocalUDP = new Text(childShellLinkWizard, SWT.BORDER);
+		textLocalUDP.setBounds(171, 240, 100, 20);
+		
+		Label lblLocalUdpPort = new Label(childShellLinkWizard, SWT.NONE);
+		lblLocalUdpPort.setText("Local UDP Port:");
+		lblLocalUdpPort.setBounds(30, 240, 122, 20);
+		
+		Text textSubnet = new Text(childShellLinkWizard, SWT.BORDER);
+		textSubnet.setBounds(171, 270, 100, 20);
+		
+		Label lblSubnetMask = new Label(childShellLinkWizard, SWT.NONE);
+		lblSubnetMask.setText("Subnet Mask:");
+		lblSubnetMask.setBounds(30, 270, 100, 20);
+		
+		Text textVLAN = new Text(childShellLinkWizard, SWT.BORDER);
+		textVLAN.setBounds(171, 300, 100, 20);
+		
+		Label lblVlan = new Label(childShellLinkWizard, SWT.NONE);
+		lblVlan.setText("VLAN:");
+		lblVlan.setBounds(30, 300, 100, 20);
+		
+		Label lblIpTtl = new Label(childShellLinkWizard, SWT.NONE);
+		lblIpTtl.setText("IP TTL:");
+		lblIpTtl.setBounds(30, 330, 100, 20);
+		
+		Text textIPTTL = new Text(childShellLinkWizard, SWT.BORDER);
+		textIPTTL.setEditable(false);
+		textIPTTL.setBounds(171, 330, 100, 20);
+		textIPTTL.setText(Integer.toString(Link.IP_TTL));
+		
+		Text textRemotePDV = new Text(childShellLinkWizard, SWT.BORDER);
+		textRemotePDV.setEditable(false);
+		textRemotePDV.setBounds(171, 360, 100, 20);
+		textRemotePDV.setText(Link.PDV_BUFFER);
+		
+		Label lblRemotePdvBuffer = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemotePdvBuffer.setText("Remote PDV Buffer:");
+		lblRemotePdvBuffer.setBounds(30, 360, 135, 20);
+		
+		Label lblAdminStatus = new Label(childShellLinkWizard, SWT.NONE);
+		lblAdminStatus.setText("Admin Status:");
+		lblAdminStatus.setBounds(300, 120, 100, 20);
+		
+		Text textCESType = new Text(childShellLinkWizard, SWT.BORDER);
+		textCESType.setEditable(false);
+		textCESType.setBounds(445, 150, 100, 20);
+		textCESType.setText(Link.CES_TYPE);
+		
+		Label lblCesType = new Label(childShellLinkWizard, SWT.NONE);
+		lblCesType.setText("CES Type:");
+		lblCesType.setBounds(300, 150, 100, 20);
+		
+		Text textPacketInterface = new Text(childShellLinkWizard, SWT.BORDER);
+		textPacketInterface.setBounds(445, 180, 100, 20);
+		
+		Label lblPacketInterface = new Label(childShellLinkWizard, SWT.NONE);
+		lblPacketInterface.setText("Packet Interface:");
+		lblPacketInterface.setBounds(300, 180, 129, 20);
+		
+		Text textRemoteIP = new Text(childShellLinkWizard, SWT.BORDER);
+		textRemoteIP.setBounds(445, 210, 100, 20);
+		
+		Label lblRemoteIpAddress = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemoteIpAddress.setText("Remote IP Address:");
+		lblRemoteIpAddress.setBounds(300, 210, 129, 20);
+		
+		Text textRemoteUDP = new Text(childShellLinkWizard, SWT.BORDER);
+		textRemoteUDP.setBounds(445, 240, 100, 20);
+		
+		Label lblRemoteUdpPort = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemoteUdpPort.setText("Remote UDP Port:");
+		lblRemoteUdpPort.setBounds(300, 240, 129, 20);
+		
+		Text textGatewayIP = new Text(childShellLinkWizard, SWT.BORDER);
+		textGatewayIP.setBounds(445, 270, 100, 20);
+		
+		Label lblGatewayIpAddress = new Label(childShellLinkWizard, SWT.NONE);
+		lblGatewayIpAddress.setText("Gateway IP Address:");
+		lblGatewayIpAddress.setBounds(300, 270, 139, 20);
+		
+		Text textPBit = new Text(childShellLinkWizard, SWT.BORDER);
+		textPBit.setEditable(false);
+		textPBit.setBounds(445, 300, 100, 20);
+		textPBit.setText(Integer.toString(Link.P_BIT));
+	
+		Label lblPbitValue = new Label(childShellLinkWizard, SWT.NONE);
+		lblPbitValue.setText("P-Bit Value:");
+		lblPbitValue.setBounds(300, 300, 100, 20);
+		
+		Label lblDscp = new Label(childShellLinkWizard, SWT.NONE);
+		lblDscp.setText("DSCP:");
+		lblDscp.setBounds(300, 330, 100, 20);
+		
+		Text textDSCP = new Text(childShellLinkWizard, SWT.BORDER);
+		textDSCP.setEditable(false);
+		textDSCP.setBounds(445, 330, 100, 20);
+		textDSCP.setText(Integer.toString(Link.DSCP));
+		
+		Combo comboAdminStatus = new Combo(childShellLinkWizard, SWT.NONE);
+		comboAdminStatus.setBounds(445, 120, 100, 25);
+		comboAdminStatus.add("Down",0);
+		comboAdminStatus.add("Up",1);
+		
+		Label lblLocalRiq = new Label(childShellLinkWizard, SWT.NONE);
+		lblLocalRiq.setBounds(30, 10, 69, 21);
+		lblLocalRiq.setText("Local RIQ:");
+		ArrayList<RIQ> riqs = builder.getRIQs();
+		for(RIQ riq : riqs) {
+			comboLocalRIQ.add(riq.getName());
+		}
+		comboLocalRIQ.setText(localRIQ.getName());
+		
+		Label lblRemoteRiq = new Label(childShellLinkWizard, SWT.NONE);
+		lblRemoteRiq.setText("Remote RIQ:");
+		lblRemoteRiq.setBounds(300, 10, 100, 21);
+		for(RIQ riq : riqs) {
+			comboRemoteRIQ.add(riq.getName());
+		}
+		
+		Label lblCesConfiguration = new Label(childShellLinkWizard, SWT.SEPARATOR | SWT.HORIZONTAL);
+		lblCesConfiguration.setText("CES Configuration");
+		lblCesConfiguration.setBounds(10, 105, 664, 9);
+		
+		Label lblShotType = new Label(childShellLinkWizard, SWT.NONE);
+		lblShotType.setText("Shot Type:");
+		lblShotType.setBounds(30, 55, 69, 21);
+		
+		Group group = new Group(childShellLinkWizard, SWT.NONE);
+		group.setBounds(169, 22, 113, 70);
+		
+		Button btnUHF = new Button(group, SWT.RADIO);
+		btnUHF.setBounds(2, 21, 110, 21);
+		btnUHF.setText("UHF");
+		btnUHF.setSelection(true);
+		
+		Button btnPPN = new Button(group, SWT.RADIO);
+		btnPPN.setBounds(2, 48, 110, 21);
+		btnPPN.setText("Fiber (PPN)");
+		
+		Label lblKgSelection = new Label(childShellLinkWizard, SWT.NONE);
+		lblKgSelection.setText("KG Selection: ");
+		lblKgSelection.setBounds(300, 55, 100, 21);
+		
+		Group group_1 = new Group(childShellLinkWizard, SWT.NONE);
+		group_1.setBounds(439, 22, 113, 70);
+		
+		Button btnLeft = new Button(group_1, SWT.RADIO);
+		btnLeft.setBounds(2, 21, 110, 21);
+		btnLeft.setText("Left");
+		btnLeft.setSelection(true);
+		
+		Button btnRight = new Button(group_1, SWT.RADIO);
+		btnRight.setBounds(2, 48, 110, 21);
+		btnRight.setText("Right");
+		
+		Button btnNewButton = new Button(childShellLinkWizard, SWT.NONE);
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				// String[] Input 	NAME,DESCRIPTION,INTERFACECES,LOCALIP,LOCALUDP,SUBNETMASK,VLAN,IP_TTL,PDV_BUFFER,ADMIN_STATUS,CES_TYPE,
+				// 					PACKETINTERFACE,REMOTEIP,REMOTEUDP,GATEWAYIP,P_BIT,DSCP
+				String[] input = new String[] {
+					textName.getText(),
+					textDescription.getText(),
+					Link.validateCESInterface(textCESInterface.getText()),
+					Link.ipValidation(textLocalIP.getText()),
+					textLocalUDP.getText(),
+					Link.subnetMaskValidation(textSubnet.getText()),
+					textVLAN.getText(),
+					textIPTTL.getText(),
+					textRemotePDV.getText(),
+					comboAdminStatus.getText(),
+					textCESType.getText(),
+					Link.validateCESInterface(textPacketInterface.getText()),
+					Link.ipValidation(textRemoteIP.getText()),
+					textRemoteUDP.getText(),
+					Link.ipValidation(textGatewayIP.getText()),
+					textPBit.getText(),
+					textDSCP.getText()
+				};
+				for (String s : input) {
+					System.out.print(s+", ");
+				}
+				
+				RIQ local = builder.getRIQ(comboLocalRIQ.getText());
+				RIQ remote = builder.getRIQ(comboRemoteRIQ.getText());
+				int type = btnUHF.getSelection() ? Link.UHF : (btnPPN.getSelection() ? Link.PPN : null);
+				int kg = btnLeft.getSelection() ? 0 : (btnRight.getSelection() ? 0 :null);
+				
+				/*
+				 * Link Constructor
+				 * @param name Name
+				 * @param localRIQ Local RIQ
+				 * @param localRIQ Remote RIQ
+				 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+				 * @param localIP Local IP Address
+				 * @param remoteIP Remote IP Address
+				 * @param interfaceCES CES Interface
+				 * @param vLAN VLAN
+				 * @param subnetMask Subnet Mask
+				 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+				 * @param udpPort UDP port for local AND remote RIQs
+				 */
+				if(input[4]==input[13]) {
+					builder.addLink(new Link(
+							input[0],
+							local,
+							remote,
+							type,
+							input[3],
+							input[12],
+							input[2],
+							Integer.parseInt(input[6]),
+							input[5],
+							kg,
+							Integer.parseInt(input[4])
+							));
+				}
+				else {
+					builder.addLink(new Link(
+							input[0],
+							local,
+							remote,
+							type,
+							input[3],
+							input[12],
+							input[2],
+							Integer.parseInt(input[6]),
+							input[5],
+							kg,
+							Integer.parseInt(input[4]),
+							Integer.parseInt(input[13])
+							));
+				}
+				childShellLinkWizard.dispose();
+			}
+		});
+		btnNewButton.setBounds(574, 120, 100, 50);
+		btnNewButton.setText("Add");
+		
+		Button btnAutoCalc = new Button(childShellLinkWizard, SWT.NONE);
+		btnAutoCalc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				// This'll be fun...
+				String[] input = new String[] {
+						textName.getText(),										// 0
+						textDescription.getText(),								// 1
+						Link.validateCESInterface(textCESInterface.getText()),	// 2
+						Link.ipValidation(textLocalIP.getText()),				// 3
+						textLocalUDP.getText(),									// 4
+						Link.subnetMaskValidation(textSubnet.getText()),		// 5
+						textVLAN.getText(),										// 6
+						textIPTTL.getText(),									// 7
+						textRemotePDV.getText(),								// 8
+						comboAdminStatus.getText(),								// 9
+						textCESType.getText(),									// 10
+						Link.validateCESInterface(textPacketInterface.getText()),//11
+						Link.ipValidation(textRemoteIP.getText()),				// 12
+						textRemoteUDP.getText(),								// 13
+						Link.ipValidation(textGatewayIP.getText()),				// 14
+						textPBit.getText(),										// 15
+						textDSCP.getText()										// 16
+					};
+				System.out.println(comboLocalRIQ.getText());
+				System.out.println(comboRemoteRIQ.getText());
+				
+				RIQ local = builder.getRIQ(comboLocalRIQ.getText());
+				RIQ remote = builder.getRIQ(comboRemoteRIQ.getText());
+				
+				System.out.println(local);
+				System.out.println(remote);
+				
+				int type = btnUHF.getSelection() ? Link.UHF : (btnPPN.getSelection() ? Link.PPN : null);
+				int kg = btnLeft.getSelection() ? 0 : (btnRight.getSelection() ? 0 :null);
+				Link test = builder.linkBuilder(
+						input[0]=="" ? local.getName()+" -> "+remote.getName() : input[0],
+						local,
+						remote,
+						type,
+						input[2]==null ? "1:1" : input[2],
+						input[5]==null ? (type==Link.UHF ? "255.255.255.0" : "255.255.0.0") : input[5],
+						kg);
+				System.out.println(test);
+				String[] output = test.toString().split(",");
+				// Put the link output to the window
+				textName.setText(output[0]);							// 0
+				textDescription.setText(output[1]);						// 1
+				textCESInterface.setText(output[2]);					// 2
+				textLocalIP.setText(output[3]);							// 3
+				textLocalUDP.setText(output[4]);						// 4
+				textSubnet.setText(output[5]);							// 5
+				textVLAN.setText(output[6]);							// 6
+				textIPTTL.setText(output[7]);							// 7
+				textRemotePDV.setText(output[8]);						// 8
+				comboAdminStatus.setText(output[9]);					// 9
+				textCESType.setText(output[10]);						// 10
+				textPacketInterface.setText(output[11]);				// 11
+				textRemoteIP.setText(output[12]);						// 12
+				textRemoteUDP.setText(output[13]);						// 13
+				textGatewayIP.setText(output[14]);						// 14
+				textPBit.setText(output[15]);							// 15
+				textDSCP.setText(output[16]);							// 16
+			}
+		});
+		btnAutoCalc.setText("Auto Calc");
+		btnAutoCalc.setBounds(574, 10, 100, 50);
+		
+		Button btnCancel = new Button(childShellLinkWizard, SWT.NONE);
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				childShellLinkWizard.dispose();
+			}
+		});
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(574, 240, 100, 50);
+		
+		Button btnClear = new Button(childShellLinkWizard, SWT.NONE);
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				textName.setText("");							// 0
+				textDescription.setText("");						// 1
+				textCESInterface.setText("");					// 2
+				textLocalIP.setText("");							// 3
+				textLocalUDP.setText("");						// 4
+				textSubnet.setText("");							// 5
+				textVLAN.setText("");							// 6
+				//textIPTTL.setText("");							// 7
+				//textRemotePDV.setText("");						// 8
+				comboAdminStatus.setText("");					// 9
+				//textCESType.setText("");						// 10
+				textPacketInterface.setText("");				// 11
+				textRemoteIP.setText("");						// 12
+				textRemoteUDP.setText("");						// 13
+				textGatewayIP.setText("");						// 14
+				//textPBit.setText("");							// 15
+				//textDSCP.setText("");							// 16
+			}
+		});
+		btnClear.setText("Clear");
+		btnClear.setBounds(574, 180, 100, 50);
 	}
 	
 	
@@ -450,7 +1097,8 @@ public class GUI {
 				newItem.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						System.out.println("Opening Link Wizard for  "+t.getSelection()[0].getText());
-						childShellLinkWizard();
+						RIQ local = builder.getRIQ(t.getSelection()[0].getText());
+						childShellLinkWizard(local);
 						childShellLinkWizard.open();
 						childShellLinkWizard.layout();
 						while (!childShellLinkWizard.isDisposed()) {

@@ -62,6 +62,11 @@ public class RIQBuilder {
 		}
 		System.out.println();
 		
+		for(int[] row : portScheme) {
+			System.out.println(Arrays.toString(row));
+		}
+		System.out.println();
+		
 		//ipSchemeBuilder(Link.PPN,ppnBase);
 		for(int i=0; i<numRIQs;i++) {
 			System.out.print("[");
@@ -277,7 +282,7 @@ public class RIQBuilder {
 		}
 	}
 	
-	public void reInitialization() {
+	public void reInitialization(boolean overwrite) {
 		System.out.println(riqs);
 		
 		ipScheme = null;
@@ -293,9 +298,18 @@ public class RIQBuilder {
 		
 		// Setup KGs for every RIQ
 		for(RIQ riq : riqs) {
-			riq.setKGs(new KG175D[] {new KG175D(riq.getName().concat("LeftKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][0],getIPScheme(Link.PPN)[riqs.indexOf(riq)][riqs.indexOf(riq)],kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][1],kgGateway),
+			if(!riq.isInitialized()) {riq.setKGs(new KG175D[] {new KG175D(riq.getName().concat("LeftKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][0],getIPScheme(Link.PPN)[riqs.indexOf(riq)][riqs.indexOf(riq)],kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][0][1],kgGateway),
 					new KG175D(riq.getName().concat("RightKG"),kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][0],getIPScheme(Link.PPN)[riqs.indexOf(riq)][riqs.indexOf(riq)],kgScheme[riqs.indexOf(riq)][riqs.indexOf(riq)][1][1],kgGateway)});
-			riq.initialized(true);
+				riq.initialized(true);
+			}
+			else if(overwrite) {
+				for(int i=0; i<riqs.size(); i++) {
+					kgScheme[i][riqs.indexOf(riq)][0][0]= riq.getKGs()[0].getPTIP();
+					kgScheme[i][riqs.indexOf(riq)][0][1]= riq.getKGs()[0].getCTIP();
+					kgScheme[i][riqs.indexOf(riq)][1][0]= riq.getKGs()[1].getPTIP();
+					kgScheme[i][riqs.indexOf(riq)][1][1]= riq.getKGs()[1].getCTIP();
+				}
+			}
 		}
 	}
 	
@@ -303,7 +317,7 @@ public class RIQBuilder {
 	
 	public RIQ getRIQ(String name) {
 		for(RIQ riq : riqs) {
-			if(riq.getName() == name) {return riq;}
+			if(riq.getName().compareTo(name)==0) {return riq;}
 		}
 		return null;
 	}
@@ -316,5 +330,60 @@ public class RIQBuilder {
 	}
 	
 	public ArrayList<RIQ> getRIQs() {return riqs;}
-
+	
+	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet) {
+		/*
+		 * Link Constructor
+		 * @param name Name
+		 * @param localRIQ Local RIQ
+		 * @param localRIQ Remote RIQ
+		 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+		 * @param localIP Local IP Address
+		 * @param remoteIP Remote IP Address
+		 * @param interfaceCES CES Interface
+		 * @param vLAN VLAN
+		 * @param subnetMask Subnet Mask
+		 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+		 * @param udpPort UDP port for local AND remote RIQs
+		 */
+		
+		int kg = 0;
+		int vlan = (type == 0) ? vlanScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 150;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET
+		int port = (type == 0) ? portScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 50000;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET 
+		
+		String localIP = ipScheme[riqs.indexOf(local)][riqs.indexOf(remote)][type];
+		String remoteIP = ipScheme[riqs.indexOf(remote)][riqs.indexOf(local)][type];
+		return new Link(name, local, remote, type, localIP, remoteIP, ces, vlan, subnet, kg, port);
+	}
+	
+	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet, int kg) {
+		/*
+		 * Link Constructor
+		 * @param name Name
+		 * @param localRIQ Local RIQ
+		 * @param localRIQ Remote RIQ
+		 * @param type Type of link (0 for UHF, 1 for Fiber Shot)
+		 * @param localIP Local IP Address
+		 * @param remoteIP Remote IP Address
+		 * @param interfaceCES CES Interface
+		 * @param vLAN VLAN
+		 * @param subnetMask Subnet Mask
+		 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
+		 * @param udpPort UDP port for local AND remote RIQs
+		 */
+		
+		int vlan = (type == Link.UHF) ? vlanScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 150;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET
+		int port = (type == Link.PPN) ? portScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 50000;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET 
+		System.out.println(port);
+		String localIP = ipScheme[riqs.indexOf(local)][riqs.indexOf(remote)][type];
+		String remoteIP = ipScheme[riqs.indexOf(remote)][riqs.indexOf(local)][type];
+		return new Link(name, local, remote, type, localIP, remoteIP, ces, vlan, subnet, kg, port);
+	}
+	
+	public boolean addLink (Link link) {
+		if (link == null) {return false;}
+		RIQ local = riqs.get(riqs.indexOf(link.getLocalRIQ()));
+		if(local != null) {local.addLink(link); return links.add(link);}
+		return false;
+	}
 }
