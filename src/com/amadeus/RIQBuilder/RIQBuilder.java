@@ -324,12 +324,30 @@ public class RIQBuilder {
 	
 	public RIQ removeRIQ(String name) {
 		for(RIQ riq : riqs) {
-			if(riq.getName() == name) {riqs.remove(riq); return riq;}
+			if(riq.getName().compareTo(name)==0) {
+				riqs.remove(riq);
+				// Remove all the corresponding links for said RIQ
+				for(Link link : riq.getLinks()) {
+					links.remove(link);
+				}
+				for(Link link : links) {
+					if(link.getRemoteRIQ().compareTo(riq)==0) {links.remove(link);}
+				}
+				return riq;
+			}
+		}
+		return null;
+	}
+	
+	public Link removeLink(String name ) {
+		for(Link link: links) {
+			if(link.getName().compareTo(name)==0) {links.remove(link); return link;}
 		}
 		return null;
 	}
 	
 	public ArrayList<RIQ> getRIQs() {return riqs;}
+	public ArrayList<Link> getLinks() {return links;}
 	
 	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet) {
 		/*
@@ -342,7 +360,7 @@ public class RIQBuilder {
 		 * @param remoteIP Remote IP Address
 		 * @param interfaceCES CES Interface
 		 * @param vLAN VLAN
-		 * @param subnetMask Subnet Mask
+		 * @param subnetMask SubnetMask
 		 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
 		 * @param udpPort UDP port for local AND remote RIQs
 		 */
@@ -387,3 +405,4 @@ public class RIQBuilder {
 		return false;
 	}
 }
+

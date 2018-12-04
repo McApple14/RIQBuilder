@@ -62,7 +62,7 @@ public class Link implements Comparable<Link>{
 	public Link(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d) {
 		this.name = name;
 		this.localRIQ = localRIQ;
-		this.remoteRIQ = localRIQ;
+		this.remoteRIQ = remoteRIQ;
 		this.localIP = localIP;
 		this.remoteIP = remoteIP;
 		this.type = type;
@@ -90,7 +90,7 @@ public class Link implements Comparable<Link>{
 	public Link(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d, int udpPort) {
 		this.name = name;
 		this.localRIQ = localRIQ;
-		this.remoteRIQ = localRIQ;
+		this.remoteRIQ = remoteRIQ;
 		this.localIP = localIP;
 		this.remoteIP = remoteIP;
 		this.type = type;
@@ -120,7 +120,7 @@ public class Link implements Comparable<Link>{
 	public Link(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d, int localPort, int remotePort) {
 		this.name = name;
 		this.localRIQ = localRIQ;
-		this.remoteRIQ = localRIQ;
+		this.remoteRIQ = remoteRIQ;
 		this.localIP = localIP;
 		this.remoteIP = remoteIP;
 		this.type = type;
