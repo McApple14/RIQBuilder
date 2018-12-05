@@ -349,7 +349,14 @@ public class RIQBuilder {
 	public ArrayList<RIQ> getRIQs() {return riqs;}
 	public ArrayList<Link> getLinks() {return links;}
 	
-	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet) {
+	public Link getLink(String name) {
+		for(Link link : links) {
+			if(link.getName().compareTo(name)==0) {return link;}
+		}
+		return null;
+	}
+	
+	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet) throws NoAvailableCESException {
 		/*
 		 * Link Constructor
 		 * @param name Name
@@ -369,12 +376,20 @@ public class RIQBuilder {
 		int vlan = (type == 0) ? vlanScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 150;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET
 		int port = (type == 0) ? portScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 50000;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET 
 		
+		if(local.getOpenCES() == null || remote.getOpenCES() == null) {
+			throw new NoAvailableCESException(local.getOpenCES() == null ? local.getName() : remote.getName());
+		}
+		
+		if(!local.isCESOpen(ces)) {
+			ces = local.getOpenCES();
+		}
+		
 		String localIP = ipScheme[riqs.indexOf(local)][riqs.indexOf(remote)][type];
 		String remoteIP = ipScheme[riqs.indexOf(remote)][riqs.indexOf(local)][type];
 		return new Link(name, local, remote, type, localIP, remoteIP, ces, vlan, subnet, kg, port);
 	}
 	
-	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet, int kg) {
+	public Link linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet, int kg) throws NoAvailableCESException {
 		/*
 		 * Link Constructor
 		 * @param name Name
@@ -385,10 +400,18 @@ public class RIQBuilder {
 		 * @param remoteIP Remote IP Address
 		 * @param interfaceCES CES Interface
 		 * @param vLAN VLAN
-		 * @param subnetMask Subnet Mask
+		 * @param subnetMask SubnetMask
 		 * @param kg175d Left or Right KG for the Local RIQ (0 for left, 1 for right) (Used for Gateway IP)
 		 * @param udpPort UDP port for local AND remote RIQs
 		 */
+		
+		if(local.getOpenCES() == null || remote.getOpenCES() == null) {
+			throw new NoAvailableCESException(local.getOpenCES() == null ? local.getName() : remote.getName());
+		}
+		
+		if(!local.isCESOpen(ces)) {
+			ces = local.getOpenCES();
+		}
 		
 		int vlan = (type == Link.UHF) ? vlanScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 150;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET
 		int port = (type == Link.PPN) ? portScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 50000;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET 

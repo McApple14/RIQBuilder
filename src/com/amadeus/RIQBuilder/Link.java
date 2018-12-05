@@ -223,4 +223,20 @@ public class Link implements Comparable<Link>{
 	public int compareTo(Link other) {
 		return toString().compareTo(other.toString());
 	}
+
+	public void editLink(String name, RIQ localRIQ, RIQ remoteRIQ, int type, String localIP, String remoteIP, String interfaceCES, int vLAN, String subnetMask, int kg175d, int localPort, int remotePort, boolean admin) {
+		this.name = name;
+		this.localRIQ = localRIQ;
+		this.remoteRIQ = remoteRIQ;
+		this.localIP = localIP;
+		this.remoteIP = remoteIP;
+		this.type = type;
+		this.interfaceCES = validateCESInterface(interfaceCES);
+		this.subnetMask = subnetMaskValidation(subnetMask);
+		this.vLAN = vLAN;
+		this.kg175d = kg175d;
+		localUDP = localPort;
+		remoteUDP = remotePort;
+		this.adminStatus = true;
+	}
 }

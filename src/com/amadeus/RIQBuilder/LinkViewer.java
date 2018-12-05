@@ -15,6 +15,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 public class LinkViewer extends Shell {
 
@@ -29,6 +32,7 @@ public class LinkViewer extends Shell {
 	private TableColumn tblclmnRemoteRiqIp;
 	private Button btnAddLink;
 	private Button btnClose;
+	private Composite composite;
 	
 	/**
 	 * Launch the application.
@@ -67,11 +71,17 @@ public class LinkViewer extends Shell {
 	protected void createContents() {
 		this.setSize(700, 450);
 		this.setText("Link Viewer");
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.verticalSpacing = 10;
+		gridLayout.horizontalSpacing = 10;
+		gridLayout.marginHeight = 10;
+		gridLayout.marginWidth = 10;
+		setLayout(gridLayout);
 		
 		table = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		table.setBounds(10, 10, 542, 386);
 		
 		menu = new Menu(table);
 		table.setMenu(menu);
@@ -96,9 +106,35 @@ public class LinkViewer extends Shell {
 		tblclmnRemoteRiqIp.setWidth(110);
 		tblclmnRemoteRiqIp.setText("Remote RIQ IP");
 		
-		btnAddLink = new Button(this, SWT.NONE);
-		btnAddLink.setBounds(560, 10, 114, 40);
+		composite = new Composite(this, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1));
+		GridLayout gl_composite = new GridLayout(1, false);
+		gl_composite.verticalSpacing = 10;
+		gl_composite.horizontalSpacing = 10;
+		gl_composite.marginHeight = 10;
+		gl_composite.marginWidth = 10;
+		composite.setLayout(gl_composite);
+		
+		btnAddLink = new Button(composite, SWT.NONE);
+		GridData gd_btnAddLink = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnAddLink.heightHint = 40;
+		gd_btnAddLink.widthHint = 70;
+		btnAddLink.setLayoutData(gd_btnAddLink);
 		btnAddLink.setText("Add Link");
+		
+		btnClose = new Button(composite, SWT.NONE);
+		GridData gd_btnClose = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnClose.heightHint = 40;
+		gd_btnClose.widthHint = 70;
+		btnClose.setLayoutData(gd_btnClose);
+		btnClose.setText("Close");
+		
+		btnClose.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				getSelf().dispose();
+			}
+		});
 		
 		btnAddLink.addMouseListener(new MouseAdapter() {
 			@Override
@@ -111,21 +147,7 @@ public class LinkViewer extends Shell {
 						display.sleep();
 					}
 				}
-				createContents();
-				open();
-				layout();
 				initLinkTable(table);
-			}
-		});
-		
-		btnClose = new Button(this, SWT.NONE);
-		btnClose.setText("Close");
-		btnClose.setBounds(558, 56, 114, 40);
-		
-		btnClose.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				getSelf().dispose();
 			}
 		});
 		
@@ -152,21 +174,57 @@ public class LinkViewer extends Shell {
 		table.setMenu(menu);
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuShown(MenuEvent e) {
-				MenuItem[] items = menu.getItems();
-				for(int i=0; i < items.length; i++) {
-					items[i].dispose();
+				try {
+						System.out.println(table.getSelection()[0] + " Selected");
+						MenuItem[] items = menu.getItems();
+						for(int i=0; i < items.length; i++) {
+							items[i].dispose();
+						}
+						// Open link
+						MenuItem newItem = new MenuItem(menu, SWT.NONE);
+						newItem.setText("View Link");
+						newItem.addListener(SWT.Selection, new Listener() {
+							public void handleEvent(Event e) {
+								System.out.println("View Link "+table.getSelection()[0].getText());
+								Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
+								linkview.open();
+								linkview.layout();
+								while (!linkview.isDisposed()) {
+									if (!display.readAndDispatch()) {
+									display.sleep();
+									}
+								}						
+							}
+						});
+						// Remove Link (Works)
+						newItem = new MenuItem(menu, SWT.NONE);
+						newItem.setText("Remove "+table.getSelection()[0].getText());
+						newItem.addListener(SWT.Selection, new Listener() {
+							public void handleEvent(Event e) {
+								System.out.println("Remove "+table.getSelection()[0].getText());
+								if(builder.removeLink(table.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
+								initLinkTable(table);
+						}
+					});
 				}
-				// Remove Link (Works)
-				MenuItem newItem = new MenuItem(menu, SWT.NONE);
-				newItem.setText("Remove "+table.getSelection()[0].getText());
-				newItem.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event e) {
-						System.out.println("Remove "+table.getSelection()[0].getText());
-						if(builder.removeLink(table.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
-						initLinkTable(table);
-					}
-				});
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 			}
+		});
+		table.addListener(SWT.MouseDoubleClick, new Listener() {
+					public void handleEvent(Event e) {
+						try {
+							System.out.println("View Link "+table.getSelection()[0].getText());
+							Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
+							linkview.open();
+							linkview.layout();
+							while (!linkview.isDisposed()) {
+								if (!display.readAndDispatch()) {
+									display.sleep();
+								}
+							}
+						}
+						catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+					}
 		});
 	}
 	

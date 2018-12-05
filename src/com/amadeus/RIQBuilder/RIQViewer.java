@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 public class RIQViewer extends Shell {
 
@@ -31,6 +34,9 @@ public class RIQViewer extends Shell {
 	private Button btnViewLinks;
 	private Button btnImport;
 	private Button btnExport;
+	private Composite composite;
+	private GridLayout gridLayout;
+	private Button btnAddRIQ;
 	
 	/**
 	 * Launch the application.
@@ -69,35 +75,15 @@ public class RIQViewer extends Shell {
 	protected void createContents() {
 		this.setSize(701, 400);
 		this.setText("RIQBuilder");
-		
-		Button btnAddRIQ = new Button(this, SWT.NONE);
-		btnAddRIQ.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				Shell riqwiz = new RIQWizard(display, builder);
-				riqwiz.open();
-				riqwiz.layout();
-				while (!riqwiz.isDisposed()) {
-					if (!display.readAndDispatch()) {
-						display.sleep();
-					}
-				}
-				createContents();
-				open();
-				layout();
-				initRIQTable(riqTable);
-			}
-		});
-		btnAddRIQ.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-		btnAddRIQ.setBounds(482, 10, 192, 37);
-		btnAddRIQ.setText("Add RIQ");
+		gridLayout = new GridLayout(2, false);
+		gridLayout.verticalSpacing = 10;
+		gridLayout.horizontalSpacing = 10;
+		gridLayout.marginHeight = 10;
+		gridLayout.marginWidth = 10;
+		setLayout(gridLayout);
 		
 		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite.setBounds(10, 10, 369, 341);
+		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
 		
@@ -106,7 +92,7 @@ public class RIQViewer extends Shell {
 		riqTable.setLinesVisible(true);
 		
 		tblclmnName = new TableColumn(riqTable, SWT.CENTER);
-		tblclmnName.setWidth(100);
+		tblclmnName.setWidth(149);
 		tblclmnName.setText("Name");
 		
 		tblclmnLinks = new TableColumn(riqTable, SWT.CENTER);
@@ -121,8 +107,86 @@ public class RIQViewer extends Shell {
 		
 		scrolledComposite.setContent(riqTable);
 		scrolledComposite.setMinSize(riqTable.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		final Menu menu = new Menu(riqTable);
+		riqTable.setMenu(menu);
+		menu.addMenuListener(new MenuAdapter() {
+			public void menuShown(MenuEvent e) {
+				try {
+					System.out.println(riqTable.getSelection()[0]+" Selected");
+					MenuItem[] items = menu.getItems();
+					for(int i=0; i < items.length; i++) {
+						items[i].dispose();
+					}
+					// Edit RIQ (Work in Progress)
+					MenuItem newItem = new MenuItem(menu, SWT.NONE);
+					/*newItem.setText("Edit "+t.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Edit "+t.getSelection()[0].getText());
+						}
+					});*/
+					
+					// Add Link to RIQ (Work in Progress)
+					newItem.setText("Add link to "+riqTable.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Opening Link Wizard for  "+riqTable.getSelection()[0].getText());
+							RIQ local = builder.getRIQ(riqTable.getSelection()[0].getText());
+							Shell linkwiz = new LinkWizard(display, builder, local);
+							linkwiz.open();
+							linkwiz.layout();
+							while (!linkwiz.isDisposed()) {
+								if (!display.readAndDispatch()) {
+									display.sleep();
+								}
+							}
+						initRIQTable(riqTable);
+						}
+					});
+				
+					// Remove RIQ (Works)
+					newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Remove "+riqTable.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Remove "+riqTable.getSelection()[0].getText());
+							if(builder.removeRIQ(riqTable.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
+							initRIQTable(riqTable);
+						}
+					});
+				}
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+			}
+		});
 		
-		btnViewLinks = new Button(this, SWT.NONE);
+		composite = new Composite(this, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true, 1, 1));
+		
+		btnAddRIQ = new Button(composite, SWT.NONE);
+		btnAddRIQ.setBounds(0, 0, 192, 37);
+		btnAddRIQ.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Shell riqwiz = new RIQWizard(display, builder);
+				riqwiz.open();
+				riqwiz.layout();
+				while (!riqwiz.isDisposed()) {
+					if (!display.readAndDispatch()) {
+						display.sleep();
+					}
+				}
+				initRIQTable(riqTable);
+			}
+		});
+		btnAddRIQ.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btnAddRIQ.setText("Add RIQ");
+		
+		btnViewLinks = new Button(composite, SWT.NONE);
+		btnViewLinks.setBounds(0, 43, 192, 37);
 		btnViewLinks.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -134,22 +198,18 @@ public class RIQViewer extends Shell {
 						display.sleep();
 					}
 				}
-				createContents();
-				open();
-				layout();
 				initRIQTable(riqTable);
 			}
 		});
 		btnViewLinks.setText("View Links");
-		btnViewLinks.setBounds(482, 53, 192, 37);
 		
-		btnImport = new Button(this, SWT.NONE);
+		btnImport = new Button(composite, SWT.NONE);
+		btnImport.setBounds(0, 86, 192, 37);
 		btnImport.setText("Import");
-		btnImport.setBounds(482, 96, 192, 37);
 		
-		btnExport = new Button(this, SWT.NONE);
+		btnExport = new Button(composite, SWT.NONE);
+		btnExport.setBounds(0, 129, 192, 37);
 		btnExport.setText("Export");
-		btnExport.setBounds(482, 139, 192, 37);
 	}
 	
 	public void initRIQTable(Table t) {
@@ -160,61 +220,9 @@ public class RIQViewer extends Shell {
 			tableItem.setText(1,Integer.toString(riq.getLinks().size()));
 			tableItem.setText(2,Integer.toString(riq.getClientList().size()));
 		}
-		initRIQTableListeners(t);
 	}
 	
-	public void initRIQTableListeners(Table t) {
-		final Menu menu = new Menu(t);
-		t.setMenu(menu);
-		menu.addMenuListener(new MenuAdapter() {
-			public void menuShown(MenuEvent e) {
-				MenuItem[] items = menu.getItems();
-				for(int i=0; i < items.length; i++) {
-					items[i].dispose();
-				}
-				// Edit RIQ (Work in Progress)
-				MenuItem newItem = new MenuItem(menu, SWT.NONE);
-				/*newItem.setText("Edit "+t.getSelection()[0].getText());
-				newItem.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event e) {
-						System.out.println("Edit "+t.getSelection()[0].getText());
-					}
-				});*/
-				
-				// Add Link to RIQ (Work in Progress)
-				newItem.setText("Add link to "+t.getSelection()[0].getText());
-				newItem.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event e) {
-						System.out.println("Opening Link Wizard for  "+t.getSelection()[0].getText());
-						RIQ local = builder.getRIQ(t.getSelection()[0].getText());
-						Shell linkwiz = new LinkWizard(display, builder, local);
-						linkwiz.open();
-						linkwiz.layout();
-						while (!linkwiz.isDisposed()) {
-							if (!display.readAndDispatch()) {
-								display.sleep();
-							}
-						}
-						createContents();
-						open();
-						layout();
-						initRIQTable(t);
-					}
-				});
-				
-				// Remove RIQ (Works)
-				newItem = new MenuItem(menu, SWT.NONE);
-				newItem.setText("Remove "+t.getSelection()[0].getText());
-				newItem.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event e) {
-						System.out.println("Remove "+t.getSelection()[0].getText());
-						if(builder.removeRIQ(t.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
-						initRIQTable(t);
-					}
-				});
-			}
-		});
-	}
+	//private Shell getSelf() {return this;}
 
 	@Override
 	protected void checkSubclass() {

@@ -95,6 +95,37 @@ public class RIQ implements Comparable<RIQ> {
 		
 	}
 	
+	public String getOpenCES() {
+		ArrayList<String> cesInts = new ArrayList<String>(Arrays.asList(new String[] {"1:1", "1:3", "3:1", "3:3"}));
+		for(Link link : links) {
+			if (cesInts.contains(link.getCESInterface())) {
+				cesInts.remove(link.getCESInterface());
+			}
+		}
+		System.out.println("Available CES Interfaces for "+name+": "+cesInts);
+		if(cesInts.size() > 0) {return cesInts.get(0);}
+		return null;
+	}
+	
+	public ArrayList<String> getAllOpenCES() {
+		ArrayList<String> cesInts = new ArrayList<String>(Arrays.asList(new String[] {"1:1", "1:3", "3:1", "3:3"}));
+		for(Link link : links) {
+			if (cesInts.contains(link.getCESInterface())) {
+				cesInts.remove(link.getCESInterface());
+			}
+		}
+		System.out.println("Available CES Interfaces for "+name+": "+cesInts);
+		if(cesInts.size() > 0) {return cesInts;}
+		return null;
+	}
+	
+	public boolean isCESOpen(String ces) {
+		for(Link link : links) {
+			if (link.getCESInterface().compareTo(ces)==0) {return false;}
+		}
+		return true;
+	}
+	
 	public String toString() {
 		return name;
 	}

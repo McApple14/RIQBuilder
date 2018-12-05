@@ -9,6 +9,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 public class RIQWizard extends Shell {
 
@@ -46,6 +49,13 @@ public class RIQWizard extends Shell {
 	private Text leftCTIP;
 	private Label lblCTIPLeft;
 	private Text leftCTGW;
+	private Composite leftKG;
+	private Composite composite;
+	private Text rightPTIP;
+	private Text rightPTGW;
+	private Text rightCTIP;
+	private Text rightCTGW;
+	private Composite compositeButtons;
 
 	/**
 	 * Create the shell.
@@ -61,84 +71,43 @@ public class RIQWizard extends Shell {
 	 * Create contents of the shell.
 	 */
 	protected void createContents() {
-		this.setSize(700, 400);
+		this.setSize(700, 280);
 		this.setText("Add RIQ");
+		GridLayout gridLayout = new GridLayout(4, false);
+		gridLayout.verticalSpacing = 10;
+		gridLayout.horizontalSpacing = 10;
+		gridLayout.marginHeight = 10;
+		gridLayout.marginWidth = 10;
+		setLayout(gridLayout);
 		
-		lblNewLabel = new Label(this, SWT.NONE);
-		lblNewLabel.setBounds(25, 30, 55, 20);
+		composite = new Composite(this, SWT.NONE);
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		composite.setLayout(new GridLayout(2, false));
+		
+		lblNewLabel = new Label(composite, SWT.NONE);
+		GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_lblNewLabel.widthHint = 70;
+		lblNewLabel.setLayoutData(gd_lblNewLabel);
 		lblNewLabel.setText("Name:");
 		
-		lblLeftKgd = new Label(this, SWT.NONE);
-		lblLeftKgd.setText("Left KG175D");
-		lblLeftKgd.setBounds(25, 84, 101, 20);
+		textName = new Text(composite, SWT.BORDER);
+		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		lblRightKgd = new Label(this, SWT.NONE);
-		lblRightKgd.setText("Right KG175D");
-		lblRightKgd.setBounds(289, 84, 101, 20);
+		compositeButtons = new Composite(this, SWT.NONE);
+		compositeButtons.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 2));
+		GridLayout gl_compositeButtons = new GridLayout(1, false);
+		gl_compositeButtons.verticalSpacing = 10;
+		gl_compositeButtons.horizontalSpacing = 10;
+		gl_compositeButtons.marginHeight = 10;
+		gl_compositeButtons.marginWidth = 10;
+		compositeButtons.setLayout(gl_compositeButtons);
+		new Label(compositeButtons, SWT.NONE);
 		
-		label = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
-		label.setBounds(259, 84, 2, 265);
-		
-		lblPTIPLeft = new Label(this, SWT.NONE);
-		lblPTIPLeft.setBounds(25, 130, 80, 20);
-		lblPTIPLeft.setText("PT IP: ");
-		
-		textName = new Text(this, SWT.BORDER);
-		textName.setBounds(86, 30, 101, 21);
-		
-		leftPTIP = new Text(this, SWT.BORDER);
-		leftPTIP.setBounds(130, 130, 101, 21);
-		
-		leftPTGW = new Text(this, SWT.BORDER);
-		leftPTGW.setBounds(130, 180, 101, 21);
-		
-		lblPTGWLeft = new Label(this, SWT.NONE);
-		lblPTGWLeft.setText("PT Gateway: ");
-		lblPTGWLeft.setBounds(25, 180, 80, 20);
-		
-		leftCTIP = new Text(this, SWT.BORDER);
-		leftCTIP.setBounds(130, 230, 101, 21);
-		
-		lblCTIPLeft = new Label(this, SWT.NONE);
-		lblCTIPLeft.setText("CT IP: ");
-		lblCTIPLeft.setBounds(25, 230, 80, 20);
-		
-		leftCTGW = new Text(this, SWT.BORDER);
-		leftCTGW.setBounds(130, 280, 101, 21);
-		
-		Label lblCTGWLeft = new Label(this, SWT.NONE);
-		lblCTGWLeft.setText("CT Gateway: ");
-		lblCTGWLeft.setBounds(25, 280, 80, 20);
-		
-		Label label_1 = new Label(this, SWT.NONE);
-		label_1.setText("PT IP: ");
-		label_1.setBounds(289, 130, 80, 20);
-		
-		Text rightPTIP = new Text(this, SWT.BORDER);
-		rightPTIP.setBounds(394, 130, 101, 21);
-		
-		Label label_2 = new Label(this, SWT.NONE);
-		label_2.setText("PT Gateway: ");
-		label_2.setBounds(289, 180, 80, 20);
-		
-		Text rightPTGW = new Text(this, SWT.BORDER);
-		rightPTGW.setBounds(394, 180, 101, 21);
-		
-		Text rightCTIP = new Text(this, SWT.BORDER);
-		rightCTIP.setBounds(394, 230, 101, 21);
-		
-		Label label_3 = new Label(this, SWT.NONE);
-		label_3.setText("CT IP: ");
-		label_3.setBounds(289, 230, 80, 20);
-		
-		Label label_4 = new Label(this, SWT.NONE);
-		label_4.setText("CT Gateway: ");
-		label_4.setBounds(289, 280, 80, 20);
-		
-		Text rightCTGW = new Text(this, SWT.BORDER);
-		rightCTGW.setBounds(394, 280, 101, 21);
-		
-		Button btnAdd = new Button(this, SWT.NONE);
+		Button btnAdd = new Button(compositeButtons, SWT.NONE);
+		GridData gd_btnAdd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_btnAdd.heightHint = 40;
+		gd_btnAdd.widthHint = 70;
+		btnAdd.setLayoutData(gd_btnAdd);
 		btnAdd.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -173,19 +142,12 @@ public class RIQWizard extends Shell {
 			}
 		});
 		btnAdd.setText("Add");
-		btnAdd.setBounds(544, 30, 130, 37);
 		
-		Button btnCancel = new Button(this, SWT.NONE);
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				getSelf().dispose();
-			}
-		});
-		btnCancel.setText("Cancel");
-		btnCancel.setBounds(544, 130, 130, 37);
-		
-		Button btnAutoCalc = new Button(this, SWT.NONE);
+		Button btnAutoCalc = new Button(compositeButtons, SWT.NONE);
+		GridData gd_btnAutoCalc = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_btnAutoCalc.heightHint = 40;
+		gd_btnAutoCalc.widthHint = 70;
+		btnAutoCalc.setLayoutData(gd_btnAutoCalc);
 		btnAutoCalc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -219,7 +181,104 @@ public class RIQWizard extends Shell {
 			}
 		});
 		btnAutoCalc.setText("Auto Calc");
-		btnAutoCalc.setBounds(544, 80, 130, 	37);
+		
+		Button btnCancel = new Button(compositeButtons, SWT.NONE);
+		GridData gd_btnCancel = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_btnCancel.heightHint = 40;
+		gd_btnCancel.widthHint = 70;
+		btnCancel.setLayoutData(gd_btnCancel);
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				getSelf().dispose();
+			}
+		});
+		btnCancel.setText("Cancel");
+		
+		leftKG = new Composite(this, SWT.NONE);
+		leftKG.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_leftKG = new GridLayout(2, false);
+		gl_leftKG.verticalSpacing = 10;
+		gl_leftKG.horizontalSpacing = 10;
+		gl_leftKG.marginHeight = 10;
+		gl_leftKG.marginWidth = 10;
+		leftKG.setLayout(gl_leftKG);
+		
+		lblLeftKgd = new Label(leftKG, SWT.NONE);
+		lblLeftKgd.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
+		lblLeftKgd.setText("Left KG175D");
+		
+		lblPTIPLeft = new Label(leftKG, SWT.NONE);
+		lblPTIPLeft.setText("PT IP: ");
+		
+		leftPTIP = new Text(leftKG, SWT.BORDER);
+		leftPTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		lblPTGWLeft = new Label(leftKG, SWT.NONE);
+		lblPTGWLeft.setText("PT Gateway: ");
+		
+		leftPTGW = new Text(leftKG, SWT.BORDER);
+		leftPTGW.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		lblCTIPLeft = new Label(leftKG, SWT.NONE);
+		lblCTIPLeft.setText("CT IP: ");
+		
+		leftCTIP = new Text(leftKG, SWT.BORDER);
+		leftCTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		Label lblCTGWLeft = new Label(leftKG, SWT.NONE);
+		GridData gd_lblCTGWLeft = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_lblCTGWLeft.widthHint = 70;
+		lblCTGWLeft.setLayoutData(gd_lblCTGWLeft);
+		lblCTGWLeft.setText("CT Gateway: ");
+		
+		leftCTGW = new Text(leftKG, SWT.BORDER);
+		leftCTGW.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		label = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
+		GridData gd_label = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
+		gd_label.widthHint = 10;
+		label.setLayoutData(gd_label);
+		
+		Composite rightKG = new Composite(this, SWT.NONE);
+		rightKG.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_rightKG = new GridLayout(2, false);
+		gl_rightKG.verticalSpacing = 10;
+		gl_rightKG.horizontalSpacing = 10;
+		gl_rightKG.marginHeight = 10;
+		gl_rightKG.marginWidth = 10;
+		rightKG.setLayout(gl_rightKG);
+		
+		lblRightKgd = new Label(rightKG, SWT.NONE);
+		lblRightKgd.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
+		lblRightKgd.setText("Right KG175D");
+		
+		Label label_1 = new Label(rightKG, SWT.NONE);
+		label_1.setText("PT IP: ");
+		
+		rightPTIP = new Text(rightKG, SWT.BORDER);
+		rightPTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label label_2 = new Label(rightKG, SWT.NONE);
+		label_2.setText("PT Gateway: ");
+		
+		rightPTGW = new Text(rightKG, SWT.BORDER);
+		rightPTGW.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label label_3 = new Label(rightKG, SWT.NONE);
+		label_3.setText("CT IP: ");
+		
+		rightCTIP = new Text(rightKG, SWT.BORDER);
+		rightCTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label label_4 = new Label(rightKG, SWT.NONE);
+		GridData gd_label_4 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_label_4.widthHint = 70;
+		label_4.setLayoutData(gd_label_4);
+		label_4.setText("CT Gateway: ");
+		
+		rightCTGW = new Text(rightKG, SWT.BORDER);
+		rightCTGW.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	}
 	
 	private Shell getSelf() {return this;}
@@ -228,5 +287,4 @@ public class RIQWizard extends Shell {
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
-
 }
