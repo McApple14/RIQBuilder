@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 
-public class Main {
+public class Application {
 
 	private static RIQBuilder builder;
 	private static Display display;
@@ -12,6 +12,8 @@ public class Main {
 	public static final int RIQVIEWER = 0;
 	public static final int LINKVIEWER = 1;
 	public static final int RIQCONFIGVIEWER = 2;
+	//public static final int IMPORT = 3;
+	//public static final int EXPORT = 4;
 	
 	protected static Shell shlRIQBuilder;
 	
@@ -22,7 +24,7 @@ public class Main {
 		builder = new RIQBuilder();
 		
 		try {
-			Main window = new Main();
+			Application window = new Application();
 			window.open();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,13 +68,13 @@ public class Main {
 	public static void open(RIQBuilder builder, RIQ riq, int window) {
 		display = Display.getDefault();		
 		switch(window) {
-		case 0:
+		case RIQVIEWER:
 			shlRIQBuilder = new RIQViewer(display, builder);
 			break;
-		case 1:
+		case LINKVIEWER:
 			shlRIQBuilder = new LinkViewer(display, builder);
 			break;
-		case 2:
+		case RIQCONFIGVIEWER:
 			shlRIQBuilder = new RIQConfigViewer(display, builder, riq);
 			break;
 		default:

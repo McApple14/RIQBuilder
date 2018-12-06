@@ -208,6 +208,13 @@ public class RIQConfigViewer extends Shell {
 		btnViewSas.setText("View SAs");
 		
 		btnBack = new Button(this, SWT.NONE);
+		btnBack.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				display.dispose();
+				Application.open(builder, Application.RIQVIEWER);
+			}
+		});
 		gd_btnBack = new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1);
 		gd_btnBack.heightHint = 40;
 		gd_btnBack.widthHint = 80;
@@ -215,6 +222,7 @@ public class RIQConfigViewer extends Shell {
 		btnBack.setText("Back");
 		
 		initLinkTable(linkTable);
+		initClientTable(clientTable);
 	}
 	
 	public void initLinkTable(Table table) {
@@ -287,6 +295,7 @@ public class RIQConfigViewer extends Shell {
 					}
 				}
 				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+				initLinkTable(table);
 			}
 		});
 	}
@@ -324,22 +333,6 @@ public class RIQConfigViewer extends Shell {
 								initClientTable(table);
 						}
 					});
-				}
-				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
-			}
-		});
-		table.addListener(SWT.MouseDoubleClick, new Listener() {
-			public void handleEvent(Event e) {
-				try {
-					System.out.println("View Link "+table.getSelection()[0].getText());
-					Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
-					linkview.open();
-					linkview.layout();
-					while (!linkview.isDisposed()) {
-						if (!display.readAndDispatch()) {
-							display.sleep();
-						}
-					}
 				}
 				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 			}

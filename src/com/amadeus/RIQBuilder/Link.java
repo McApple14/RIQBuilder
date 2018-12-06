@@ -1,9 +1,14 @@
 package com.amadeus.RIQBuilder;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 
-public class Link implements Comparable<Link>{
+public class Link implements Comparable<Link>, Serializable {
+	/**
+	 * Used for Serializable
+	 */
+	private static final long serialVersionUID = 121576569032051381L;
 	private String name;
 	private RIQ localRIQ;
 	private RIQ remoteRIQ;

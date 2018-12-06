@@ -2,8 +2,19 @@ package com.amadeus.RIQBuilder;
 
 import java.util.*;
 
-public class RIQBuilder {
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
+public class RIQBuilder implements Serializable {
+
+	/**
+	 * Used for Serializable interface
+	 */
+	private static final long serialVersionUID = 1237724186392451191L;
 	//public String[][] ipScheme_UHF;
 	//public String[][] ipScheme_PPN;
 	private String[][][] ipScheme;
@@ -34,8 +45,11 @@ public class RIQBuilder {
 	 */
 	
 	public RIQBuilder() {
+		riqs = new ArrayList<RIQ>();
+		links = new ArrayList<Link>();
 		// TODO Auto-generated method stub
 		
+		// Presets for Testing----------------------------
 		String uhfBase = "192.168.0.0";
 		String ppnBase = "198.127.1.0";
 		String kgBase = "10.11.16.0";
@@ -52,9 +66,17 @@ public class RIQBuilder {
 		riqs.add(new RIQ("CRG"));
 		
 		int numRIQs = riqs.size();
+		
+		for(int i=1; i <= riqs.size(); i++) {
+			riqs.get(i-1).addClient("Client1", "169.254."+Integer.toString(i)+".44");
+			riqs.get(i-1).addClient("Client2", "169.254."+Integer.toString(i)+".55");
+			System.out.println(riqs.get(i-1).getName()+" has "+riqs.get(i-1).getClientList().size()+" Clients.");
+		}
 		System.out.println("VLAN Base = "+vlanBase+"; numRIQs = "+numRIQs);
-		//public void initialization(int baseVLAN, String basePPN, String baseUHF, String baseKG)
+		// Presets for Testing----------------------------
+		
 		initialization(vlanBase, ppnBase, uhfBase, kgBase);
+			
 		
 		//vlanSchemeBuilder(base);
 		for(int[] row : vlanScheme) {
@@ -425,6 +447,53 @@ public class RIQBuilder {
 		if (link == null) {return false;}
 		RIQ local = riqs.get(riqs.indexOf(link.getLocalRIQ()));
 		if(local != null) {local.addLink(link); return links.add(link);}
+		return false;
+	}
+	
+	public boolean exportObject(String fileName, RIQBuilder builder) {		
+		try {
+			FileOutputStream fileOut = new FileOutputStream(fileName);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(builder);
+			out.close();
+			fileOut.close();
+			System.out.printf("Serialized data is saved in "+fileName);
+			return true;
+		} catch (IOException i) {
+			i.printStackTrace();
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean importObject(String fileName) {
+		try {
+			FileInputStream fileIn = new FileInputStream(fileName);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			RIQBuilder another = (RIQBuilder) in.readObject();
+			System.out.printf("Serialized data loaded from "+fileName);
+			in.close();
+			fileIn.close();
+			// Set this object as the loaded object
+			this.ipScheme = another.ipScheme.clone();
+			this.kgScheme = another.kgScheme.clone(); 
+			this.vlanScheme = another.vlanScheme.clone();
+			this.portScheme = another.portScheme.clone();
+			this.riqs = (ArrayList<RIQ>) another.riqs.clone();
+			this.links = (ArrayList<Link>) another.links.clone();
+			this.kgGateway = another.kgGateway;
+			this.baseVLAN = another.baseVLAN;
+			this.basePPN = another.basePPN;
+			this.baseUHF = another.baseUHF;
+			this.baseKG = another.baseKG;
+			return true;
+		} catch (IOException i) {
+			//i.printStackTrace();
+			System.out.println("Problem boss");
+		} catch (ClassNotFoundException c) {
+			System.out.println("RIQBuilder Class not found");
+			//c.printStackTrace();
+		}
 		return false;
 	}
 }

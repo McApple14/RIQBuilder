@@ -1,8 +1,13 @@
 package com.amadeus.RIQBuilder;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class RIQ implements Comparable<RIQ> {
+public class RIQ implements Comparable<RIQ>, Serializable {
+	/**
+	 * Used for Serializable
+	 */
+	private static final long serialVersionUID = 9142118418101855780L;
 	private String name;
 	private ArrayList<Client> clients;
 	private ArrayList<Link> links;
@@ -51,6 +56,7 @@ public class RIQ implements Comparable<RIQ> {
 	public ArrayList<Link> getLinks() {return links;}
 	
 	public boolean addClient(String name, String ip) {
+		System.out.println(ip);
 		ip = Link.ipValidation(ip);
 		if(ip != null) {
 			clients.add(new Client(name,ip));
@@ -69,7 +75,7 @@ public class RIQ implements Comparable<RIQ> {
 	public ArrayList<Client> getClientList() {return clients;}
 	
 	public boolean addLink(Link link) {
-		clientSABuilder(link);
+		if(link.getType()==Link.PPN) {clientSABuilder(link);}
 		return links.add(link);
 	}
 	
@@ -90,13 +96,19 @@ public class RIQ implements Comparable<RIQ> {
 	public void clientSABuilder(Link link) {
 		ArrayList<Client> devices = (link.getRemoteRIQ()).getClientList();
 		if(devices == null || devices.size() == 0) {return;}
+		System.out.println("Remote RIQ "+link.getRemoteRIQ().getName()+" has "+link.getRemoteRIQ().getClientList().size()+" Clients.");
 		KG175D remoteKG = (link.getRemoteRIQ()).getKGs()[link.getSideKG()];
+		System.out.println(remoteKG+" Selected");
 		(getKGs())[link.getSideKG()].addSA("RemoteRIQ "+(link.getRemoteRIQ().getName()), link.getRemoteIP(), remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
+		System.out.println("Remote RIQ SA Added");
 		
-		for(Client client: devices) {
+		for(Client client : devices) {
 			(getKGs())[link.getSideKG()].addSA((link.getRemoteRIQ().getName())+client.getName(), client.getIP(), remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
 		}
 		
+		for(SA sa : (getKGs())[link.getSideKG()].getSAList()) {
+			System.out.println(sa);
+		}
 	}
 	
 	public String getOpenCES() {

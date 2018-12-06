@@ -1,6 +1,12 @@
 package com.amadeus.RIQBuilder;
 
-public class SA implements Comparable<SA>{
+import java.io.Serializable;
+
+public class SA implements Comparable<SA>, Serializable {
+	/**
+	 * Used for Serializable
+	 */
+	private static final long serialVersionUID = -4542090115698486368L;
 	private String name;
 	private String host;
 	private String remotePT;
@@ -24,8 +30,8 @@ public class SA implements Comparable<SA>{
 	public int getCIDR() {return cidr;}
 	
 	public String toString() {
-		return 	"Link Name:\t"+name+"\n"+
-				"Host:\t\t"+host+"\\"+"\n"+
+		return 	"Name:\t\t"+name+"\n"+
+				"Host:\t\t"+host+"\\"+cidr+"\n"+
 				"Remote PT:\t"+remotePT+"\n"+
 				"Remote CT:\t"+remoteCT;
 	}

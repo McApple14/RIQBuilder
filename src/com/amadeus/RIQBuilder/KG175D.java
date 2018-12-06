@@ -1,8 +1,13 @@
 package com.amadeus.RIQBuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class KG175D {
+public class KG175D implements Serializable {
+	/**
+	 * Used for Serializable
+	 */
+	private static final long serialVersionUID = -8298668530076076618L;
 	private String name;
 	private String ptIP;
 	private String ptGW;
@@ -10,7 +15,7 @@ public class KG175D {
 	private String ctGW;
 	private ArrayList<SA> saList;
 	
-	public KG175D() {}
+	public KG175D() {saList = new ArrayList<SA>();}
 	
 	public KG175D(String name, String ptIP, String ptGW, String ctIP, String ctGW) {
 		this.name = name;
@@ -18,6 +23,7 @@ public class KG175D {
 		this.ptGW = ptGW;
 		this.ctIP = ctIP;
 		this.ctGW = ctGW;
+		saList = new ArrayList<SA>();
 	}
 	
 	public String getName() {return name;}
@@ -43,5 +49,9 @@ public class KG175D {
 			}
 		}
 		return false;
+	}
+	
+	public String toString() {
+		return name;
 	}
 }

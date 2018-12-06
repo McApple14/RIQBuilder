@@ -11,6 +11,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -149,16 +150,40 @@ public class RIQViewer extends Shell {
 				}
 				initRIQTable(riqTable);*/
 				display.dispose();
-				Main.open(builder, Main.LINKVIEWER);
+				Application.open(builder, Application.LINKVIEWER);
 			}
 		});
 		btnViewLinks.setText("View Links");
 		
 		btnImport = new Button(composite, SWT.NONE);
+		btnImport.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				FileDialog dialog = new FileDialog(getSelf(), SWT.OPEN);
+				dialog.setFilterExtensions(new String [] {"*.rb","*.*"});
+				dialog.setFilterPath("c:\\temp");
+				String fileName = dialog.open();
+				builder.importObject(fileName);
+				if(fileName==null || fileName=="") {System.out.println("No FileName");return;}
+				initRIQTable(riqTable);
+			}
+		});
 		btnImport.setBounds(0, 86, 192, 37);
 		btnImport.setText("Import");
 		
 		btnExport = new Button(composite, SWT.NONE);
+		btnExport.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				FileDialog dialog = new FileDialog(getSelf(), SWT.SAVE);
+				dialog.setFilterExtensions(new String [] {"*.rb","*.*"});
+				dialog.setFilterPath("c:\\temp");
+				String fileName = dialog.open();
+				if(fileName==null || fileName=="") {System.out.println("No FileName");return;}
+				builder.exportObject(fileName, builder);
+				initRIQTable(riqTable);
+			}
+		});
 		btnExport.setBounds(0, 129, 192, 37);
 		btnExport.setText("Export");
 		
@@ -193,7 +218,7 @@ public class RIQViewer extends Shell {
 					newItem.addListener(SWT.Selection, new Listener() {
 						public void handleEvent(Event e) {
 							display.close();
-							Main.open(builder, builder.getRIQ(table.getSelection()[0].getText()), Main.RIQCONFIGVIEWER);
+							Application.open(builder, builder.getRIQ(table.getSelection()[0].getText()), Application.RIQCONFIGVIEWER);
 						}
 					});
 					// Add Link to RIQ (Work in Progress)
@@ -237,7 +262,7 @@ public class RIQViewer extends Shell {
 				try {
 					RIQ riq = builder.getRIQ(table.getSelection()[0].getText());
 					display.dispose();
-					Main.open(builder, riq, Main.RIQCONFIGVIEWER);
+					Application.open(builder, riq, Application.RIQCONFIGVIEWER);
 				}
 				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 			}

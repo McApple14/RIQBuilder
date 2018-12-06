@@ -1,7 +1,13 @@
 package com.amadeus.RIQBuilder;
 
-public class Client implements Comparable<Client> {
+import java.io.Serializable;
+
+public class Client implements Comparable<Client>, Serializable {
 	
+	/**
+	 * Used for Serializable
+	 */
+	private static final long serialVersionUID = 2770313436162187032L;
 	private String name;
 	private String ip;
 	
