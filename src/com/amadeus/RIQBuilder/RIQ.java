@@ -4,7 +4,7 @@ import java.util.*;
 
 public class RIQ implements Comparable<RIQ> {
 	private String name;
-	private ArrayList<String> clients;
+	private ArrayList<Client> clients;
 	private ArrayList<Link> links;
 	private KG175D kg1;
 	private KG175D kg2;
@@ -13,14 +13,14 @@ public class RIQ implements Comparable<RIQ> {
 	
 	
 	public RIQ() {
-		clients = new ArrayList<String>();
+		clients = new ArrayList<Client>();
 		links = new ArrayList<Link>();
 		initialized = false;
 	}
 	
 	public RIQ(String name) {
 		this.name = name;
-		clients = new ArrayList<String>();
+		clients = new ArrayList<Client>();
 		links = new ArrayList<Link>();
 		setHub(false);
 		initialized = false;
@@ -28,7 +28,7 @@ public class RIQ implements Comparable<RIQ> {
 	
 	public RIQ(String name, KG175D kg1, KG175D kg2) {
 		this.name = name;
-		clients = new ArrayList<String>();
+		clients = new ArrayList<Client>();
 		links = new ArrayList<Link>();
 		this.kg1 = kg1;
 		this.kg2 = kg2;
@@ -50,22 +50,26 @@ public class RIQ implements Comparable<RIQ> {
 	
 	public ArrayList<Link> getLinks() {return links;}
 	
-	public boolean addClient(String in) {
-		String IP = Link.ipValidation(in);
-		if(IP != null) {
-			clients.add(IP);
+	public boolean addClient(String name, String ip) {
+		ip = Link.ipValidation(ip);
+		if(ip != null) {
+			clients.add(new Client(name,ip));
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean removeClient(String in) {
-		return clients.remove(in);
+	public Client removeClient(String name) {
+		for(Client client : clients) {
+			if(client.getName().compareTo(name)==0) {clients.remove(client); return client;}
+		}
+		return null;
 	}
 	
-	public ArrayList<String> getClientList() {return clients;}
+	public ArrayList<Client> getClientList() {return clients;}
 	
 	public boolean addLink(Link link) {
+		clientSABuilder(link);
 		return links.add(link);
 	}
 	
@@ -84,13 +88,13 @@ public class RIQ implements Comparable<RIQ> {
 	}
 	
 	public void clientSABuilder(Link link) {
-		ArrayList<String> devices = (link.getRemoteRIQ()).getClientList();
+		ArrayList<Client> devices = (link.getRemoteRIQ()).getClientList();
+		if(devices == null || devices.size() == 0) {return;}
 		KG175D remoteKG = (link.getRemoteRIQ()).getKGs()[link.getSideKG()];
 		(getKGs())[link.getSideKG()].addSA("RemoteRIQ "+(link.getRemoteRIQ().getName()), link.getRemoteIP(), remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
 		
-		int count = 1;
-		for(String ip : devices) {
-			(getKGs())[link.getSideKG()].addSA((link.getRemoteRIQ().getName())+" Client "+count++, ip, remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
+		for(Client client: devices) {
+			(getKGs())[link.getSideKG()].addSA((link.getRemoteRIQ().getName())+client.getName(), client.getIP(), remoteKG.getPTIP(), remoteKG.getCTIP(), 32);
 		}
 		
 	}

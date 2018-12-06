@@ -298,7 +298,7 @@ public class LinkConfigViewer extends Shell {
 				}
 			}
 		});
-		GridData gd_btnSaveEdit = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_btnSaveEdit = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_btnSaveEdit.heightHint = 40;
 		gd_btnSaveEdit.widthHint = 80;
 		btnSaveEdit.setLayoutData(gd_btnSaveEdit);
@@ -312,9 +312,9 @@ public class LinkConfigViewer extends Shell {
 				getSelf().close();
 			}
 		});
-		GridData gd_btnRemoveLink = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_btnRemoveLink = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_btnRemoveLink.heightHint = 40;
-		gd_btnRemoveLink.widthHint = 80;
+		gd_btnRemoveLink.widthHint = 90;
 		btnRemoveLink.setLayoutData(gd_btnRemoveLink);
 		btnRemoveLink.setText("Remove Link");
 		
@@ -325,7 +325,7 @@ public class LinkConfigViewer extends Shell {
 				getSelf().close();
 			}
 		});
-		GridData gd_btnClose = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_btnClose = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_btnClose.heightHint = 40;
 		gd_btnClose.widthHint = 80;
 		btnClose.setLayoutData(gd_btnClose);

@@ -107,57 +107,6 @@ public class RIQViewer extends Shell {
 		
 		scrolledComposite.setContent(riqTable);
 		scrolledComposite.setMinSize(riqTable.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		final Menu menu = new Menu(riqTable);
-		riqTable.setMenu(menu);
-		menu.addMenuListener(new MenuAdapter() {
-			public void menuShown(MenuEvent e) {
-				try {
-					System.out.println(riqTable.getSelection()[0]+" Selected");
-					MenuItem[] items = menu.getItems();
-					for(int i=0; i < items.length; i++) {
-						items[i].dispose();
-					}
-					// Edit RIQ (Work in Progress)
-					MenuItem newItem = new MenuItem(menu, SWT.NONE);
-					/*newItem.setText("Edit "+t.getSelection()[0].getText());
-					newItem.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event e) {
-							System.out.println("Edit "+t.getSelection()[0].getText());
-						}
-					});*/
-					
-					// Add Link to RIQ (Work in Progress)
-					newItem.setText("Add link to "+riqTable.getSelection()[0].getText());
-					newItem.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event e) {
-							System.out.println("Opening Link Wizard for  "+riqTable.getSelection()[0].getText());
-							RIQ local = builder.getRIQ(riqTable.getSelection()[0].getText());
-							Shell linkwiz = new LinkWizard(display, builder, local);
-							linkwiz.open();
-							linkwiz.layout();
-							while (!linkwiz.isDisposed()) {
-								if (!display.readAndDispatch()) {
-									display.sleep();
-								}
-							}
-						initRIQTable(riqTable);
-						}
-					});
-				
-					// Remove RIQ (Works)
-					newItem = new MenuItem(menu, SWT.NONE);
-					newItem.setText("Remove "+riqTable.getSelection()[0].getText());
-					newItem.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event e) {
-							System.out.println("Remove "+riqTable.getSelection()[0].getText());
-							if(builder.removeRIQ(riqTable.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
-							initRIQTable(riqTable);
-						}
-					});
-				}
-				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
-			}
-		});
 		
 		composite = new Composite(this, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true, 1, 1));
@@ -190,7 +139,7 @@ public class RIQViewer extends Shell {
 		btnViewLinks.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				Shell linkview = new LinkViewer(display, builder);
+				/*Shell linkview = new LinkViewer(display, builder);
 				linkview.open();
 				linkview.layout();
 				while (!linkview.isDisposed()) {
@@ -198,7 +147,9 @@ public class RIQViewer extends Shell {
 						display.sleep();
 					}
 				}
-				initRIQTable(riqTable);
+				initRIQTable(riqTable);*/
+				display.dispose();
+				Main.open(builder, Main.LINKVIEWER);
 			}
 		});
 		btnViewLinks.setText("View Links");
@@ -210,6 +161,8 @@ public class RIQViewer extends Shell {
 		btnExport = new Button(composite, SWT.NONE);
 		btnExport.setBounds(0, 129, 192, 37);
 		btnExport.setText("Export");
+		
+		initRIQTable(riqTable);
 	}
 	
 	public void initRIQTable(Table t) {
@@ -220,9 +173,78 @@ public class RIQViewer extends Shell {
 			tableItem.setText(1,Integer.toString(riq.getLinks().size()));
 			tableItem.setText(2,Integer.toString(riq.getClientList().size()));
 		}
+		initRIQTableListeners(t);
 	}
 	
-	//private Shell getSelf() {return this;}
+	public void initRIQTableListeners(Table table) {
+		final Menu menu = new Menu(table);
+		table.setMenu(menu);
+		menu.addMenuListener(new MenuAdapter() {
+			public void menuShown(MenuEvent e) {
+				try {
+					System.out.println(table.getSelection()[0] + " Selected");
+					MenuItem[] items = menu.getItems();
+					for(int i=0; i < items.length; i++) {
+						items[i].dispose();
+					}
+					// Open RIQ
+					MenuItem newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Open "+table.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							display.close();
+							Main.open(builder, builder.getRIQ(table.getSelection()[0].getText()), Main.RIQCONFIGVIEWER);
+						}
+					});
+					// Add Link to RIQ (Work in Progress)
+					newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Add link to "+riqTable.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Opening Link Wizard for  "+riqTable.getSelection()[0].getText());
+							RIQ local = builder.getRIQ(riqTable.getSelection()[0].getText());
+							Shell linkwiz = new LinkWizard(display, builder, local);
+							linkwiz.open();
+							linkwiz.layout();
+							while (!linkwiz.isDisposed()) {
+								if (!display.readAndDispatch()) {
+									display.sleep();
+								}
+							}
+						initRIQTable(riqTable);
+						}
+					});
+				
+					// Remove RIQ (Works)
+					newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Remove "+riqTable.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Remove "+riqTable.getSelection()[0].getText());
+							if(builder.removeRIQ(riqTable.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
+							initRIQTable(riqTable);
+						}
+					});
+				}
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+			}
+		});
+		for(Listener listener : table.getListeners(SWT.MouseDoubleClick)) {
+			table.removeListener(SWT.MouseDoubleClick, listener);
+		}
+		table.addListener(SWT.MouseDoubleClick, new Listener() {
+			public void handleEvent(Event e) {
+				try {
+					RIQ riq = builder.getRIQ(table.getSelection()[0].getText());
+					display.dispose();
+					Main.open(builder, riq, Main.RIQCONFIGVIEWER);
+				}
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+			}
+		});		
+	}
+	
+	private Shell getSelf() {return this;}
 
 	@Override
 	protected void checkSubclass() {

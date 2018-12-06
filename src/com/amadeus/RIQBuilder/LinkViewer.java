@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Label;
 
 public class LinkViewer extends Shell {
 
@@ -33,6 +34,7 @@ public class LinkViewer extends Shell {
 	private Button btnAddLink;
 	private Button btnClose;
 	private Composite composite;
+	private Button btnViewRiqs;
 	
 	/**
 	 * Launch the application.
@@ -122,6 +124,20 @@ public class LinkViewer extends Shell {
 		btnAddLink.setLayoutData(gd_btnAddLink);
 		btnAddLink.setText("Add Link");
 		
+		btnViewRiqs = new Button(composite, SWT.NONE);
+		btnViewRiqs.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				getSelf().getDisplay().dispose();
+				Main.open(builder, Main.RIQVIEWER);
+			}
+		});
+		GridData gd_btnViewRiqs = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_btnViewRiqs.heightHint = 40;
+		gd_btnViewRiqs.widthHint = 70;
+		btnViewRiqs.setLayoutData(gd_btnViewRiqs);
+		btnViewRiqs.setText("View RIQs");
+		
 		btnClose = new Button(composite, SWT.NONE);
 		GridData gd_btnClose = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnClose.heightHint = 40;
@@ -210,6 +226,9 @@ public class LinkViewer extends Shell {
 				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 			}
 		});
+		for(Listener listener : table.getListeners(SWT.MouseDoubleClick)) {
+			table.removeListener(SWT.MouseDoubleClick, listener);
+		}
 		table.addListener(SWT.MouseDoubleClick, new Listener() {
 					public void handleEvent(Event e) {
 						try {

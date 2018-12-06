@@ -175,23 +175,29 @@ public class LinkWizard extends Shell {
 				int kg = btnLeft.getSelection() ? 0 : (btnRight.getSelection() ? 0 :null);
 				Link test = null;
 				try {
+					if(comboCES.getText()=="") {throw new Exception();}
 					test = builder.linkBuilder(
 						input[0]=="" ? local.getName()+" -> "+remote.getName() : input[0],
 						local,
 						remote,
 						type,
-						comboCES.getText()!="" ? comboCES.getText() : (input[2]=="" ? "1:1" : input[2]),
+						comboCES.getText(),//!="" ? comboCES.getText() : (input[2]=="" ? "1:1" : input[2]),
 						input[5]=="" ? (type==Link.UHF ? "255.255.255.0" : "255.255.0.0") : input[5],
 						kg);
 				}
 				catch(NoAvailableCESException exceptionCES) {
-					if(comboLocalRIQ.getText() == "" || comboRemoteRIQ.getText() == "" || comboLocalRIQ.getText().compareTo(comboRemoteRIQ.getText()) == 0) {
-						MessageBox dialog = new MessageBox(getSelf(), SWT.ICON_ERROR | SWT.OK);
-						dialog.setText("Link Builder Error");
-						dialog.setMessage(exceptionCES.getCulperit()+" Has no available CES Interfaces");
-						dialog.open();
-						return;
-					}
+					MessageBox dialog = new MessageBox(getSelf(), SWT.ICON_ERROR | SWT.OK);
+					dialog.setText("Link Builder Error");
+					dialog.setMessage(exceptionCES.getCulperit()+" Has no available CES Interfaces");
+					dialog.open();
+					return;
+				}
+				catch(Exception otherException) {
+					MessageBox dialog = new MessageBox(getSelf(), SWT.ICON_ERROR | SWT.OK);
+					dialog.setText("Link Builder Error");
+					dialog.setMessage("Invalid CES Interface");
+					dialog.open();
+					return;
 				}
 				
 				System.out.println(test);
