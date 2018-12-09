@@ -46,7 +46,7 @@ public class RIQViewer extends Shell {
 	public static void main(String args[]) {
 		try {
 			Display display = Display.getDefault();
-			RIQViewer shell = new RIQViewer(display, new RIQBuilder());
+			RIQViewer shell = new RIQViewer(display, new RIQBuilder(true));
 			shell.open();
 			shell.layout();
 			while (!shell.isDisposed()) {

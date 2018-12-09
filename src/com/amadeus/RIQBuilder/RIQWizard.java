@@ -24,7 +24,7 @@ public class RIQWizard extends Shell {
 	public static void main(String args[]) {
 		try {
 			Display display = Display.getDefault();
-			RIQWizard shell = new RIQWizard(display, new RIQBuilder());
+			RIQWizard shell = new RIQWizard(display, new RIQBuilder(true));
 			shell.open();
 			shell.layout();
 			while (!shell.isDisposed()) {

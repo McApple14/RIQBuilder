@@ -48,111 +48,133 @@ public class RIQBuilder implements Serializable {
 		riqs = new ArrayList<RIQ>();
 		links = new ArrayList<Link>();
 		// TODO Auto-generated method stub
-		
-		// Presets for Testing----------------------------
-		String uhfBase = "192.168.0.0";
-		String ppnBase = "198.127.1.0";
-		String kgBase = "10.11.16.0";
-		kgGateway = "10.11.16.16";
-		int vlanBase = 30;
-		
+	}
+	
+	public RIQBuilder(boolean debug) {
 		riqs = new ArrayList<RIQ>();
+		links = new ArrayList<Link>();
 		
-		riqs.add(new RIQ("ICC"));
-		riqs.add(new RIQ("Alpha"));
-		riqs.add(new RIQ("Bravo"));
-		riqs.add(new RIQ("Charlie"));
-		riqs.add(new RIQ("Delta"));
-		riqs.add(new RIQ("CRG"));
-		
-		int numRIQs = riqs.size();
-		
-		for(int i=1; i <= riqs.size(); i++) {
-			riqs.get(i-1).addClient("Client1", "169.254."+Integer.toString(i)+".44");
-			riqs.get(i-1).addClient("Client2", "169.254."+Integer.toString(i)+".55");
-			System.out.println(riqs.get(i-1).getName()+" has "+riqs.get(i-1).getClientList().size()+" Clients.");
-		}
-		System.out.println("VLAN Base = "+vlanBase+"; numRIQs = "+numRIQs);
-		// Presets for Testing----------------------------
-		
-		initialization(vlanBase, ppnBase, uhfBase, kgBase);
+		if(debug) {
+			// Presets for Testing----------------------------
+			String uhfBase = "192.168.0.0";
+			String ppnBase = "198.127.1.0";
+			String kgBase = "10.11.16.0";
+			kgGateway = "10.11.16.16";
+			int vlanBase = 30;
 			
-		
-		//vlanSchemeBuilder(base);
-		for(int[] row : vlanScheme) {
-			System.out.println(Arrays.toString(row));
-		}
-		System.out.println();
-		
-		for(int[] row : portScheme) {
-			System.out.println(Arrays.toString(row));
-		}
-		System.out.println();
-		
-		//ipSchemeBuilder(Link.PPN,ppnBase);
-		for(int i=0; i<numRIQs;i++) {
-			System.out.print("[");
-			for(int j=0; j<numRIQs;j++) {
-				System.out.print(ipScheme[i][j][Link.PPN]);
-				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			riqs = new ArrayList<RIQ>();
+			
+			riqs.add(new RIQ("ICC"));
+			riqs.add(new RIQ("Alpha"));
+			riqs.add(new RIQ("Bravo"));
+			riqs.add(new RIQ("Charlie"));
+			riqs.add(new RIQ("Delta"));
+			riqs.add(new RIQ("CRG"));
+			
+			int numRIQs = riqs.size();
+			
+			for(int i=1; i <= riqs.size(); i++) {
+				riqs.get(i-1).addClient("Client1", "169.254."+Integer.toString(i)+".44");
+				riqs.get(i-1).addClient("Client2", "169.254."+Integer.toString(i)+".55");
+				System.out.println(riqs.get(i-1).getName()+" has "+riqs.get(i-1).getClientList().size()+" Clients.");
 			}
-			System.out.println("]");
-		}
-		System.out.println();
-		
-		//ipSchemeBuilder(Link.UHF,uhfBase);
-		for(int i=0; i<numRIQs;i++) {
-			System.out.print("[");
-			for(int j=0; j<numRIQs;j++) {
-				System.out.print(ipScheme[i][j][Link.UHF]);
-				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			System.out.println("VLAN Base = "+vlanBase+"; numRIQs = "+numRIQs);
+			// Presets for Testing----------------------------
+			
+			initialization(vlanBase, ppnBase, uhfBase, kgBase);
+				
+			
+			//vlanSchemeBuilder(base);
+			for(int[] row : vlanScheme) {
+				System.out.println(Arrays.toString(row));
 			}
-			System.out.println("]");
-		}
-		System.out.println();
-		
-		//kgSchemeBuilder("172.16.32.0");
-		System.out.println("KG Scheme LEFT PT");
-		for(int i=0; i<riqs.size();i++) {
-			System.out.print("[");
-			for(int j=0; j<riqs.size();j++) {
-				System.out.print(kgScheme[i][j][0][0]);
-				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			System.out.println();
+			
+			for(int[] row : portScheme) {
+				System.out.println(Arrays.toString(row));
 			}
-			System.out.println("]");
-		}
-		System.out.println();
-		System.out.println("KG Scheme LEFT CT");
-		for(int i=0; i<riqs.size();i++) {
-			System.out.print("[");
-			for(int j=0; j<riqs.size();j++) {
-				System.out.print(kgScheme[i][j][0][1]);
-				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			System.out.println();
+			
+			//ipSchemeBuilder(Link.PPN,ppnBase);
+			for(int i=0; i<numRIQs;i++) {
+				System.out.print("[");
+				for(int j=0; j<numRIQs;j++) {
+					System.out.print(ipScheme[i][j][Link.PPN]);
+					if((j+1)!=riqs.size()) {System.out.print(",\t");}
+				}
+				System.out.println("]");
 			}
-			System.out.println("]");
-		}
-		System.out.println();
-		
-		System.out.println("KG Scheme RIGHT PT");
-		for(int i=0; i<riqs.size();i++) {
-			System.out.print("[");
-			for(int j=0; j<riqs.size();j++) {
-				System.out.print(kgScheme[i][j][1][0]);
-				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			System.out.println();
+			
+			//ipSchemeBuilder(Link.UHF,uhfBase);
+			for(int i=0; i<numRIQs;i++) {
+				System.out.print("[");
+				for(int j=0; j<numRIQs;j++) {
+					System.out.print(ipScheme[i][j][Link.UHF]);
+					if((j+1)!=riqs.size()) {System.out.print(",\t");}
+				}
+				System.out.println("]");
 			}
-			System.out.println("]");
-		}
-		System.out.println();
-		System.out.println("KG Scheme RIGHT CT");
-		for(int i=0; i<riqs.size();i++) {
-			System.out.print("[");
-			for(int j=0; j<riqs.size();j++) {
-				System.out.print(kgScheme[i][j][1][1]);
-				if((j+1)!=riqs.size()) {System.out.print(",\t");}
+			System.out.println();
+			
+			//kgSchemeBuilder("172.16.32.0");
+			System.out.println("KG Scheme LEFT PT");
+			for(int i=0; i<riqs.size();i++) {
+				System.out.print("[");
+				for(int j=0; j<riqs.size();j++) {
+					System.out.print(kgScheme[i][j][0][0]);
+					if((j+1)!=riqs.size()) {System.out.print(",\t");}
+				}
+				System.out.println("]");
 			}
-			System.out.println("]");
+			System.out.println();
+			System.out.println("KG Scheme LEFT CT");
+			for(int i=0; i<riqs.size();i++) {
+				System.out.print("[");
+				for(int j=0; j<riqs.size();j++) {
+					System.out.print(kgScheme[i][j][0][1]);
+					if((j+1)!=riqs.size()) {System.out.print(",\t");}
+				}
+				System.out.println("]");
+			}
+			System.out.println();
+			
+			System.out.println("KG Scheme RIGHT PT");
+			for(int i=0; i<riqs.size();i++) {
+				System.out.print("[");
+				for(int j=0; j<riqs.size();j++) {
+					System.out.print(kgScheme[i][j][1][0]);
+					if((j+1)!=riqs.size()) {System.out.print(",\t");}
+				}
+				System.out.println("]");
+			}
+			System.out.println();
+			System.out.println("KG Scheme RIGHT CT");
+			for(int i=0; i<riqs.size();i++) {
+				System.out.print("[");
+				for(int j=0; j<riqs.size();j++) {
+					System.out.print(kgScheme[i][j][1][1]);
+					if((j+1)!=riqs.size()) {System.out.print(",\t");}
+				}
+				System.out.println("]");
+			}
+			System.out.println();
+			
+			//linkBuilder(String name, RIQ local, RIQ remote, int type, String ces, String subnet, int kg) throws NoAvailableCESException
+			try {
+				addLink(linkBuilder("ICC -> Alpha", riqs.get(0), riqs.get(1), Link.PPN, riqs.get(0).getOpenCES(), "255.255.0.0", 0));
+				addLink(linkBuilder("Alpha -> ICC", riqs.get(1), riqs.get(0), Link.PPN, riqs.get(1).getOpenCES(), "255.255.0.0", 0));
+				
+				addLink(linkBuilder("ICC -> Bravo", riqs.get(0), riqs.get(2), Link.PPN, riqs.get(0).getOpenCES(), "255.255.0.0", 0));
+				addLink(linkBuilder("Bravo -> ICC", riqs.get(2), riqs.get(0), Link.PPN, riqs.get(2).getOpenCES(), "255.255.0.0", 0));
+				
+				addLink(linkBuilder("ICC -> Charlie", riqs.get(0), riqs.get(3), Link.PPN, riqs.get(0).getOpenCES(), "255.255.0.0", 0));
+				addLink(linkBuilder("Charlie -> ICC", riqs.get(3), riqs.get(0), Link.PPN, riqs.get(3).getOpenCES(), "255.255.0.0", 0));
+				
+				addLink(linkBuilder("ICC -> Delta", riqs.get(0), riqs.get(4), Link.PPN, riqs.get(0).getOpenCES(), "255.255.0.0", 0));
+				addLink(linkBuilder("Delta -> ICC", riqs.get(4), riqs.get(0), Link.PPN, riqs.get(4).getOpenCES(), "255.255.0.0", 0));
+			} catch (NoAvailableCESException e) {System.out.print("Something went wrong in RIQBuilder: "); System.out.println(e.getCulperit());}
 		}
-		System.out.println();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -398,7 +420,7 @@ public class RIQBuilder implements Serializable {
 		int vlan = (type == 0) ? vlanScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 150;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET
 		int port = (type == 0) ? portScheme[riqs.indexOf(local)][riqs.indexOf(remote)] : 50000;	// CHANGE THIS WHEN DEFAULT PPN VLAN CAN BE SET 
 		
-		if(local.getOpenCES() == null || remote.getOpenCES() == null) {
+		if(local.getOpenCES() == null) {
 			throw new NoAvailableCESException(local.getOpenCES() == null ? local.getName() : remote.getName());
 		}
 		
@@ -427,7 +449,7 @@ public class RIQBuilder implements Serializable {
 		 * @param udpPort UDP port for local AND remote RIQs
 		 */
 		
-		if(local.getOpenCES() == null || remote.getOpenCES() == null) {
+		if(local.getOpenCES() == null) {
 			throw new NoAvailableCESException(local.getOpenCES() == null ? local.getName() : remote.getName());
 		}
 		

@@ -47,7 +47,7 @@ public class LinkConfigViewer extends Shell {
 	public static void main(String args[]) {
 		try {
 			Display display = Display.getDefault();
-			RIQBuilder builder = new RIQBuilder();
+			RIQBuilder builder = new RIQBuilder(true);
 			LinkConfigViewer shell = new LinkConfigViewer(display, builder, builder.getLinks().get(0), true);
 			shell.open();
 			shell.layout();

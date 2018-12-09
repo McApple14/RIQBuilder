@@ -15,6 +15,9 @@ public class KG175D implements Serializable {
 	private String ctGW;
 	private ArrayList<SA> saList;
 	
+	public static final int LEFT = 0;
+	public static final int RIGHT = 1;
+	
 	public KG175D() {saList = new ArrayList<SA>();}
 	
 	public KG175D(String name, String ptIP, String ptGW, String ctIP, String ctGW) {

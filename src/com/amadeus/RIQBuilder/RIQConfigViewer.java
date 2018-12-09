@@ -75,7 +75,7 @@ public class RIQConfigViewer extends Shell {
 	public RIQConfigViewer(Display display) {
 		super(display, SWT.SHELL_TRIM);
 		this.display = display;
-		builder = new RIQBuilder();
+		builder = new RIQBuilder(true);
 		riq = builder.getRIQs().get(0);
 		createContents();
 	}
@@ -201,6 +201,13 @@ public class RIQConfigViewer extends Shell {
 		btnAddClient.setText("Add Client");
 		
 		btnViewSas = new Button(this, SWT.NONE);
+		btnViewSas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				display.dispose();
+				Application.open(builder, riq, Application.SAVIEWER);
+			}
+		});
 		gd_btnViewSas = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnViewSas.heightHint = 40;
 		gd_btnViewSas.widthHint = 80;

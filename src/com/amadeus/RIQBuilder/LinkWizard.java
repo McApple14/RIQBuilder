@@ -28,7 +28,7 @@ public class LinkWizard extends Shell {
 	public static void main(String args[]) {
 		try {
 			Display display = Display.getDefault();
-			LinkWizard shell = new LinkWizard(display, new RIQBuilder());
+			LinkWizard shell = new LinkWizard(display, new RIQBuilder(true));
 			shell.open();
 			shell.layout();
 			while (!shell.isDisposed()) {
