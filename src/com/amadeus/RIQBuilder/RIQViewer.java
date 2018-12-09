@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Label;
 
 public class RIQViewer extends Shell {
 
@@ -38,6 +39,7 @@ public class RIQViewer extends Shell {
 	private Composite composite;
 	private GridLayout gridLayout;
 	private Button btnAddRIQ;
+	private Button btnClearAndInit;
 	
 	/**
 	 * Launch the application.
@@ -110,10 +112,19 @@ public class RIQViewer extends Shell {
 		scrolledComposite.setMinSize(riqTable.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 		composite = new Composite(this, SWT.NONE);
+		GridLayout gl_composite = new GridLayout(1, false);
+		gl_composite.verticalSpacing = 10;
+		gl_composite.horizontalSpacing = 10;
+		gl_composite.marginHeight = 10;
+		gl_composite.marginWidth = 10;
+		composite.setLayout(gl_composite);
 		composite.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true, 1, 1));
 		
 		btnAddRIQ = new Button(composite, SWT.NONE);
-		btnAddRIQ.setBounds(0, 0, 192, 37);
+		GridData gd_btnAddRIQ = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnAddRIQ.heightHint = 40;
+		gd_btnAddRIQ.widthHint = 80;
+		btnAddRIQ.setLayoutData(gd_btnAddRIQ);
 		btnAddRIQ.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -136,7 +147,10 @@ public class RIQViewer extends Shell {
 		btnAddRIQ.setText("Add RIQ");
 		
 		btnViewLinks = new Button(composite, SWT.NONE);
-		btnViewLinks.setBounds(0, 43, 192, 37);
+		GridData gd_btnViewLinks = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnViewLinks.heightHint = 40;
+		gd_btnViewLinks.widthHint = 80;
+		btnViewLinks.setLayoutData(gd_btnViewLinks);
 		btnViewLinks.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -155,7 +169,32 @@ public class RIQViewer extends Shell {
 		});
 		btnViewLinks.setText("View Links");
 		
+		btnClearAndInit = new Button(composite, SWT.WRAP);
+		btnClearAndInit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				builder = new RIQBuilder();
+				Shell initWiz = new InitWizard(display, builder);
+				initWiz.open();
+				initWiz.layout();
+				while (!initWiz.isDisposed()) {
+					if (!display.readAndDispatch()) {
+						display.sleep();
+					}
+				}
+			}
+		});
+		GridData gd_btnClearAndInit = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnClearAndInit.heightHint = 40;
+		gd_btnClearAndInit.widthHint = 80;
+		btnClearAndInit.setLayoutData(gd_btnClearAndInit);
+		btnClearAndInit.setText("Clear and Reinitialize");
+		
 		btnImport = new Button(composite, SWT.NONE);
+		GridData gd_btnImport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnImport.heightHint = 40;
+		gd_btnImport.widthHint = 80;
+		btnImport.setLayoutData(gd_btnImport);
 		btnImport.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -168,10 +207,13 @@ public class RIQViewer extends Shell {
 				initRIQTable(riqTable);
 			}
 		});
-		btnImport.setBounds(0, 86, 192, 37);
 		btnImport.setText("Import");
 		
 		btnExport = new Button(composite, SWT.NONE);
+		GridData gd_btnExport = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnExport.heightHint = 40;
+		gd_btnExport.widthHint = 80;
+		btnExport.setLayoutData(gd_btnExport);
 		btnExport.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -184,7 +226,6 @@ public class RIQViewer extends Shell {
 				initRIQTable(riqTable);
 			}
 		});
-		btnExport.setBounds(0, 129, 192, 37);
 		btnExport.setText("Export");
 		
 		initRIQTable(riqTable);

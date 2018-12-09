@@ -326,6 +326,11 @@ public class RIQBuilder implements Serializable {
 		}
 	}
 	
+	public void initialization(int baseVLAN, String basePPN, String baseUHF, String baseKG, String gateway) {
+		kgGateway = gateway;
+		initialization(baseVLAN, basePPN, baseUHF, baseKG);
+	}
+	
 	public void reInitialization(boolean overwrite) {
 		System.out.println(riqs);
 		

@@ -159,6 +159,13 @@ public class SAViewer extends Shell {
 		btnAddClient.setText("Add Client");
 		
 		btnClear = new Button(this, SWT.NONE);
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				riq.getKGs()[getKGSelection()].getSAList().clear();
+				initSATable(table);
+			}
+		});
 		GridData gd_btnClear = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnClear.heightHint = 40;
 		gd_btnClear.widthHint = 80;
@@ -172,7 +179,7 @@ public class SAViewer extends Shell {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				display.dispose();
-				Application.open(builder, Application.RIQCONFIGVIEWER);
+				Application.open(builder, riq, Application.RIQCONFIGVIEWER);
 			}
 		});
 		GridData gd_btnClose = new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1);
