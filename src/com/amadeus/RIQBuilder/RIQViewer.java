@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Label;
 
 public class RIQViewer extends Shell {
 
@@ -182,6 +181,7 @@ public class RIQViewer extends Shell {
 						display.sleep();
 					}
 				}
+				initRIQTable(riqTable);
 			}
 		});
 		GridData gd_btnClearAndInit = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
