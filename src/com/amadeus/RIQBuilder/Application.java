@@ -22,12 +22,8 @@ public class Application {
 	// This will be moved to Main.java when complete
 	public static void main(String[] args) {
 		
-		//builder = new RIQBuilder();
-		builder = new RIQBuilder(true);
-		
 		try {
-			Application window = new Application();
-			window.open();
+			open();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -36,7 +32,8 @@ public class Application {
 	/**
 	 * Open the window.
 	 */
-	public void open() {
+	public static void open() {
+		builder = new RIQBuilder();
 		display = Display.getDefault();
 		shlRIQBuilder = new RIQViewer(display, builder);
 		shlRIQBuilder.open();

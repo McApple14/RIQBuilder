@@ -71,7 +71,7 @@ public class RIQWizard extends Shell {
 	 * Create contents of the shell.
 	 */
 	protected void createContents() {
-		this.setSize(700, 280);
+		this.setSize(700, 300);
 		this.setText("Add RIQ");
 		GridLayout gridLayout = new GridLayout(4, false);
 		gridLayout.verticalSpacing = 10;
@@ -190,7 +190,7 @@ public class RIQWizard extends Shell {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				getSelf().dispose();
+				dispose();
 			}
 		});
 		btnCancel.setText("Cancel");
@@ -215,6 +215,7 @@ public class RIQWizard extends Shell {
 		leftPTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		lblPTGWLeft = new Label(leftKG, SWT.NONE);
+		lblPTGWLeft.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblPTGWLeft.setText("PT Gateway: ");
 		
 		leftPTGW = new Text(leftKG, SWT.BORDER);
@@ -227,7 +228,7 @@ public class RIQWizard extends Shell {
 		leftCTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		Label lblCTGWLeft = new Label(leftKG, SWT.NONE);
-		GridData gd_lblCTGWLeft = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_lblCTGWLeft = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_lblCTGWLeft.widthHint = 70;
 		lblCTGWLeft.setLayoutData(gd_lblCTGWLeft);
 		lblCTGWLeft.setText("CT Gateway: ");
@@ -272,7 +273,7 @@ public class RIQWizard extends Shell {
 		rightCTIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label label_4 = new Label(rightKG, SWT.NONE);
-		GridData gd_label_4 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_label_4 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_label_4.widthHint = 70;
 		label_4.setLayoutData(gd_label_4);
 		label_4.setText("CT Gateway: ");

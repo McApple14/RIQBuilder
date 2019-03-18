@@ -11,6 +11,7 @@ public class RIQ implements Comparable<RIQ>, Serializable {
 	private String name;
 	private ArrayList<Client> clients;
 	private ArrayList<Link> links;
+	private ArrayList<VLAN> vLANs;
 	private KG175D kg1;
 	private KG175D kg2;
 	private boolean isHub;
@@ -20,6 +21,7 @@ public class RIQ implements Comparable<RIQ>, Serializable {
 	public RIQ() {
 		clients = new ArrayList<Client>();
 		links = new ArrayList<Link>();
+		setVLANs(new ArrayList<VLAN>());
 		initialized = false;
 	}
 	
@@ -27,6 +29,7 @@ public class RIQ implements Comparable<RIQ>, Serializable {
 		this.name = name;
 		clients = new ArrayList<Client>();
 		links = new ArrayList<Link>();
+		setVLANs(new ArrayList<VLAN>());
 		setHub(false);
 		initialized = false;
 	}
@@ -35,6 +38,7 @@ public class RIQ implements Comparable<RIQ>, Serializable {
 		this.name = name;
 		clients = new ArrayList<Client>();
 		links = new ArrayList<Link>();
+		setVLANs(new ArrayList<VLAN>());
 		this.kg1 = kg1;
 		this.kg2 = kg2;
 		setHub(false);
@@ -76,6 +80,7 @@ public class RIQ implements Comparable<RIQ>, Serializable {
 	
 	public boolean addLink(Link link) {
 		if(link.getType()==Link.PPN) {clientSABuilder(link);}
+		vLANs.add(new VLAN(link.getVLAN(),link.getName(),link.getDescription(),true,true,0));
 		return links.add(link);
 	}
 	
@@ -148,5 +153,13 @@ public class RIQ implements Comparable<RIQ>, Serializable {
 	
 	public int compareTo(RIQ other) {
 		return name.compareTo(other.getName());
+	}
+
+	public ArrayList<VLAN> getVLANs() {
+		return vLANs;
+	}
+
+	public void setVLANs(ArrayList<VLAN> vLANs) {
+		this.vLANs = vLANs;
 	}
 }

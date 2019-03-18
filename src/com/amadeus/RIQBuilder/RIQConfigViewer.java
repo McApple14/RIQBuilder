@@ -6,8 +6,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -18,8 +16,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.events.MenuAdapter;
+import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class RIQConfigViewer extends Shell {
 	
@@ -28,10 +30,6 @@ public class RIQConfigViewer extends Shell {
 	private RIQ riq;
 	private Table linkTable;
 	private Table clientTable;
-	private ScrolledComposite scrolledComposite;
-	private GridData gd_scrolledComposite;
-	private ScrolledComposite scrolledComposite_1;
-	private GridData gd_scrolledComposite_1;
 	private Button btnAddLink;
 	private GridData gd_btnAddLink;
 	private TableColumn tblclmnName;
@@ -47,6 +45,10 @@ public class RIQConfigViewer extends Shell {
 	private GridData gd_btnBack;
 	private TableColumn tblclmnName_1;
 	private TableColumn tblclmnIpAddress;
+	private ScrolledComposite scrolledComposite;
+	private ScrolledComposite scrolledComposite_1;
+	private Label lblLinks;
+	private Label lblClients;
 
 	/**
 	 * Launch the application.
@@ -104,33 +106,17 @@ public class RIQConfigViewer extends Shell {
 		GridLayout gridLayout = new GridLayout(3, false);
 		setLayout(gridLayout);
 		
-		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		gd_scrolledComposite = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_scrolledComposite.heightHint = 20;
-		scrolledComposite.setLayoutData(gd_scrolledComposite);
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
-		
-		Label lblLinks = new Label(scrolledComposite, SWT.NONE);
+		lblLinks = new Label(this, SWT.NONE);
+		lblLinks.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblLinks.setFont(SWTResourceManager.getFont("Segoe UI", 14, SWT.NORMAL));
 		lblLinks.setAlignment(SWT.CENTER);
 		lblLinks.setText("Links");
-		scrolledComposite.setContent(lblLinks);
-		scrolledComposite.setMinSize(lblLinks.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
-		scrolledComposite_1 = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		gd_scrolledComposite_1 = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_scrolledComposite_1.heightHint = 20;
-		scrolledComposite_1.setLayoutData(gd_scrolledComposite_1);
-		scrolledComposite_1.setExpandHorizontal(true);
-		scrolledComposite_1.setExpandVertical(true);
-		
-		Label lblClients = new Label(scrolledComposite_1, SWT.NONE);
-		lblClients.setText("Clients");
+		lblClients = new Label(this, SWT.NONE);
+		lblClients.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		lblClients.setFont(SWTResourceManager.getFont("Segoe UI", 14, SWT.NORMAL));
 		lblClients.setAlignment(SWT.CENTER);
-		scrolledComposite_1.setContent(lblClients);
-		scrolledComposite_1.setMinSize(lblClients.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		lblClients.setText("Clients");
 		
 		btnAddLink = new Button(this, SWT.NONE);
 		btnAddLink.addMouseListener(new MouseAdapter() {
@@ -153,8 +139,12 @@ public class RIQConfigViewer extends Shell {
 		btnAddLink.setLayoutData(gd_btnAddLink);
 		btnAddLink.setText("Add Link");
 		
-		linkTable = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
-		linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3));
+		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 3));
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		
+		linkTable = new Table(scrolledComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		linkTable.setHeaderVisible(true);
 		linkTable.setLinesVisible(true);
 		
@@ -177,11 +167,16 @@ public class RIQConfigViewer extends Shell {
 		tblclmnRemoteIp = new TableColumn(linkTable, SWT.NONE);
 		tblclmnRemoteIp.setWidth(100);
 		tblclmnRemoteIp.setText("Remote IP");
+
+		scrolledComposite.setContent(linkTable);
+		scrolledComposite.setMinSize(linkTable.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
-		clientTable = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
-		GridData gd_table_1 = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3);
-		gd_table_1.widthHint = 220;
-		clientTable.setLayoutData(gd_table_1);
+		scrolledComposite_1 = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3));
+		scrolledComposite_1.setExpandHorizontal(true);
+		scrolledComposite_1.setExpandVertical(true);
+		
+		clientTable = new Table(scrolledComposite_1, SWT.BORDER | SWT.FULL_SELECTION);
 		clientTable.setHeaderVisible(true);
 		clientTable.setLinesVisible(true);
 		
@@ -193,12 +188,34 @@ public class RIQConfigViewer extends Shell {
 		tblclmnIpAddress.setWidth(100);
 		tblclmnIpAddress.setText("IP Address");
 		
+		scrolledComposite_1.setContent(clientTable);
+		scrolledComposite_1.setMinSize(clientTable.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
 		btnAddClient = new Button(this, SWT.NONE);
+		btnAddClient.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		gd_btnAddClient = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnAddClient.heightHint = 40;
 		gd_btnAddClient.widthHint = 80;
 		btnAddClient.setLayoutData(gd_btnAddClient);
 		btnAddClient.setText("Add Client");
+		btnAddClient.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Shell clientwiz = new LinkWizard(display, builder);
+				clientwiz.open();
+				clientwiz.layout();
+				while (!clientwiz.isDisposed()) {
+					if (!display.readAndDispatch()) {
+						display.sleep();
+					}
+				}
+				initClientTable(clientTable);
+			}
+		});
 		
 		btnViewSas = new Button(this, SWT.NONE);
 		btnViewSas.addMouseListener(new MouseAdapter() {
@@ -229,7 +246,7 @@ public class RIQConfigViewer extends Shell {
 		btnBack.setText("Back");
 		
 		initLinkTable(linkTable);
-		initClientTable(clientTable);
+		initClientTable(clientTable);		
 	}
 	
 	public void initLinkTable(Table table) {
@@ -247,44 +264,6 @@ public class RIQConfigViewer extends Shell {
 	}
 
 	public void initLinkTableListeners(Table table) {
-		// TODO Auto-generated method stub
-		final Menu menu = new Menu(table);
-		table.setMenu(menu);
-		menu.addMenuListener(new MenuAdapter() {
-			public void menuShown(MenuEvent e) {
-				try {
-					System.out.println(table.getSelection()[0] + " Selected");
-					// Open link
-					MenuItem newItem = new MenuItem(menu, SWT.NONE);
-					newItem.setText("View Link");
-					newItem.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event e) {
-							System.out.println("View Link "+table.getSelection()[0].getText());
-							Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
-							linkview.open();
-							linkview.layout();
-							while (!linkview.isDisposed()) {
-								if (!display.readAndDispatch()) {
-								display.sleep();
-								}
-							}
-							initLinkTable(table);
-						}
-					});
-					// Remove Link (Works)
-					newItem = new MenuItem(menu, SWT.NONE);
-					newItem.setText("Remove "+table.getSelection()[0].getText());
-					newItem.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event e) {
-							System.out.println("Remove "+table.getSelection()[0].getText());
-							if(builder.removeLink(table.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
-							initLinkTable(table);
-						}
-					});
-				}
-				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
-			}
-		});
 		for(Listener listener : table.getListeners(SWT.MouseDoubleClick)) {
 			table.removeListener(SWT.MouseDoubleClick, listener);
 		}
@@ -300,9 +279,59 @@ public class RIQConfigViewer extends Shell {
 							display.sleep();
 						}
 					}
+					initLinkTable(table);
+					initClientTable(clientTable);
 				}
 				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 				initLinkTable(table);
+			}
+		});
+		
+		final Menu menu = new Menu(table);
+		table.setMenu(menu);
+		menu.addMenuListener(new MenuAdapter() {
+			public void menuShown(MenuEvent e) {
+				try {
+					System.out.println(table.getSelection()[0] + " Selected");
+					MenuItem[] items = menu.getItems();
+					for(int i=0; i < items.length; i++) {
+						items[i].dispose();
+					}
+					// Open Link
+					MenuItem newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Open "+table.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							try {
+								System.out.println("View Link "+table.getSelection()[0].getText());
+								Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
+								linkview.open();
+								linkview.layout();
+								while (!linkview.isDisposed()) {
+									if (!display.readAndDispatch()) {
+										display.sleep();
+									}
+								}
+								initLinkTable(table);
+								initClientTable(clientTable);
+							}
+							catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+							initLinkTable(table);
+						}
+					});
+
+					// Remove Link (Works)
+					newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Remove "+table.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Remove "+table.getSelection()[0].getText());
+							if(builder.removeLink(table.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
+							initLinkTable(table);
+						}
+					});
+				}
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 			}
 		});
 	}
@@ -319,25 +348,70 @@ public class RIQConfigViewer extends Shell {
 	}
 
 	public void initClientTableListeners(Table table) {
-		// TODO Auto-generated method stub
+		for(Listener listener : table.getListeners(SWT.MouseDoubleClick)) {
+			table.removeListener(SWT.MouseDoubleClick, listener);
+		}
+		table.addListener(SWT.MouseDoubleClick, new Listener() {
+			public void handleEvent(Event e) {
+				try {
+					System.out.println("View Link "+table.getSelection()[0].getText());
+					Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
+					linkview.open();
+					linkview.layout();
+					while (!linkview.isDisposed()) {
+						if (!display.readAndDispatch()) {
+							display.sleep();
+						}
+					}
+					initLinkTable(table);
+					initClientTable(clientTable);
+				}
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+				initLinkTable(table);
+			}
+		});
+		
 		final Menu menu = new Menu(table);
 		table.setMenu(menu);
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuShown(MenuEvent e) {
 				try {
-						System.out.println(table.getSelection()[0] + " Selected");
-						MenuItem[] items = menu.getItems();
-						for(int i=0; i < items.length; i++) {
-							items[i].dispose();
+					System.out.println(table.getSelection()[0] + " Selected");
+					MenuItem[] items = menu.getItems();
+					for(int i=0; i < items.length; i++) {
+						items[i].dispose();
+					}
+					// Open Link
+					MenuItem newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Open "+table.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							try {
+								System.out.println("View Link "+table.getSelection()[0].getText());
+								Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
+								linkview.open();
+								linkview.layout();
+								while (!linkview.isDisposed()) {
+									if (!display.readAndDispatch()) {
+										display.sleep();
+									}
+								}
+								initLinkTable(table);
+								initClientTable(clientTable);
+							}
+							catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+							initLinkTable(table);
 						}
-						MenuItem newItem = new MenuItem(menu, SWT.NONE);
-						// Remove Link (Works)
-						newItem.setText("Remove "+table.getSelection()[0].getText());
-						newItem.addListener(SWT.Selection, new Listener() {
-							public void handleEvent(Event e) {
-								System.out.println("Remove "+table.getSelection()[0].getText());
-								if(riq.removeClient(table.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
-								initClientTable(table);
+					});
+
+					// Remove Client (Works)
+					newItem = new MenuItem(menu, SWT.NONE);
+					newItem.setText("Remove "+table.getSelection()[0].getText());
+					newItem.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event e) {
+							System.out.println("Remove "+table.getSelection()[0].getText());
+							if(riq.removeClient(table.getSelection()[0].getText()) == null) {System.out.println("Failed to Remove");};
+							initClientTable(table);
 						}
 					});
 				}

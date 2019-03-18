@@ -172,7 +172,7 @@ public class RIQViewer extends Shell {
 		btnClearAndInit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				builder = new RIQBuilder();
+				// builder = new RIQBuilder();
 				Shell initWiz = new InitWizard(display, builder);
 				initWiz.open();
 				initWiz.layout();

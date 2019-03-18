@@ -389,9 +389,14 @@ public class RIQBuilder implements Serializable {
 		return null;
 	}
 	
-	public Link removeLink(String name ) {
+	public Link removeLink(String name) {
 		for(Link link: links) {
-			if(link.getName().compareTo(name)==0) {links.remove(link); return link;}
+			if(link.getName().compareTo(name)==0) {
+				links.remove(link);
+				getRIQ(link.getLocalRIQ().getName()).removeLink(link);
+				//getRIQ(link.getRemoteRIQ().getName()).removeLink(link);
+				return link;
+			}
 		}
 		return null;
 	}

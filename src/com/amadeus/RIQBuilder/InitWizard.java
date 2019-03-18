@@ -123,11 +123,12 @@ public class InitWizard extends Shell {
 		textVLAN = new Text(composite, SWT.BORDER);
 		textVLAN.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Button btnNewButton = new Button(this, SWT.NONE);
-		btnNewButton.addMouseListener(new MouseAdapter() {
+		Button btnInit = new Button(this, SWT.NONE);
+		btnInit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				try {
+					builder = new RIQBuilder();
 					baseUHF = Link.ipValidation(textUHF.getText()); if(baseUHF==null) {throw new IllegalArgumentException("Invalid Base UHF IP Address");}
 					basePPN = Link.ipValidation(textPPN.getText()); if(basePPN==null) {throw new IllegalArgumentException("Invalid Base PPN IP Address");} 
 					baseKG = Link.ipValidation(textKG.getText()); if(baseKG==null) {throw new IllegalArgumentException("Invalid Base PPN IP Address");}
@@ -150,24 +151,24 @@ public class InitWizard extends Shell {
 				getSelf().dispose();
 			}
 		});
-		GridData gd_btnNewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_btnNewButton.heightHint = 40;
-		gd_btnNewButton.widthHint = 80;
-		btnNewButton.setLayoutData(gd_btnNewButton);
-		btnNewButton.setText("Initialize");
+		GridData gd_btnInit = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnInit.heightHint = 40;
+		gd_btnInit.widthHint = 80;
+		btnInit.setLayoutData(gd_btnInit);
+		btnInit.setText("Initialize");
 		
-		Button btnNewButton_1 = new Button(this, SWT.NONE);
-		btnNewButton_1.addMouseListener(new MouseAdapter() {
+		Button btnClose = new Button(this, SWT.NONE);
+		btnClose.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				getSelf().dispose();
 			}
 		});
-		GridData gd_btnNewButton_1 = new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1);
-		gd_btnNewButton_1.heightHint = 40;
-		gd_btnNewButton_1.widthHint = 80;
-		btnNewButton_1.setLayoutData(gd_btnNewButton_1);
-		btnNewButton_1.setText("Close");
+		GridData gd_btnClose = new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1);
+		gd_btnClose.heightHint = 40;
+		gd_btnClose.widthHint = 80;
+		btnClose.setLayoutData(gd_btnClose);
+		btnClose.setText("Close");
 	}
 	
 	private Shell getSelf() {return this;}
