@@ -202,8 +202,8 @@ public class RIQViewer extends Shell {
 				dialog.setFilterExtensions(new String [] {"*.rb","*.*"});
 				dialog.setFilterPath("c:\\temp");
 				String fileName = dialog.open();
-				builder.importObject(fileName);
 				if(fileName==null || fileName=="") {System.out.println("No FileName");return;}
+				builder.importObject(fileName);
 				initRIQTable(riqTable);
 			}
 		});
@@ -258,8 +258,12 @@ public class RIQViewer extends Shell {
 					newItem.setText("Open "+table.getSelection()[0].getText());
 					newItem.addListener(SWT.Selection, new Listener() {
 						public void handleEvent(Event e) {
-							display.close();
-							Application.open(builder, builder.getRIQ(table.getSelection()[0].getText()), Application.RIQCONFIGVIEWER);
+							try {
+								RIQ riq = builder.getRIQ(table.getSelection()[0].getText());
+								display.dispose();
+								Application.open(builder, riq, Application.RIQCONFIGVIEWER);
+							}
+							catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
 						}
 					});
 					// Add Link to RIQ (Work in Progress)

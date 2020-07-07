@@ -128,7 +128,6 @@ public class InitWizard extends Shell {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				try {
-					builder = new RIQBuilder();
 					baseUHF = Link.ipValidation(textUHF.getText()); if(baseUHF==null) {throw new IllegalArgumentException("Invalid Base UHF IP Address");}
 					basePPN = Link.ipValidation(textPPN.getText()); if(basePPN==null) {throw new IllegalArgumentException("Invalid Base PPN IP Address");} 
 					baseKG = Link.ipValidation(textKG.getText()); if(baseKG==null) {throw new IllegalArgumentException("Invalid Base PPN IP Address");}
@@ -147,6 +146,7 @@ public class InitWizard extends Shell {
 					dialog.open();
 					return;
 				}
+				builder.clear();
 				builder.initialization(baseVLAN, basePPN, baseUHF, baseKG, gateway);
 				getSelf().dispose();
 			}

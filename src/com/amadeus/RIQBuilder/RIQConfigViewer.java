@@ -49,6 +49,7 @@ public class RIQConfigViewer extends Shell {
 	private ScrolledComposite scrolledComposite_1;
 	private Label lblLinks;
 	private Label lblClients;
+	private Button btnViewVLANs;
 
 	/**
 	 * Launch the application.
@@ -135,12 +136,12 @@ public class RIQConfigViewer extends Shell {
 		});
 		gd_btnAddLink = new GridData(SWT.FILL, SWT.BOTTOM, false, false, 1, 1);
 		gd_btnAddLink.heightHint = 40;
-		gd_btnAddLink.widthHint = 80;
+		gd_btnAddLink.widthHint = 90;
 		btnAddLink.setLayoutData(gd_btnAddLink);
 		btnAddLink.setText("Add Link");
 		
 		scrolledComposite = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 3));
+		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 4));
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
 		
@@ -172,7 +173,7 @@ public class RIQConfigViewer extends Shell {
 		scrolledComposite.setMinSize(linkTable.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 		scrolledComposite_1 = new ScrolledComposite(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3));
+		scrolledComposite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4));
 		scrolledComposite_1.setExpandHorizontal(true);
 		scrolledComposite_1.setExpandVertical(true);
 		
@@ -199,7 +200,7 @@ public class RIQConfigViewer extends Shell {
 		});
 		gd_btnAddClient = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnAddClient.heightHint = 40;
-		gd_btnAddClient.widthHint = 80;
+		gd_btnAddClient.widthHint = 90;
 		btnAddClient.setLayoutData(gd_btnAddClient);
 		btnAddClient.setText("Add Client");
 		btnAddClient.addMouseListener(new MouseAdapter() {
@@ -217,6 +218,16 @@ public class RIQConfigViewer extends Shell {
 			}
 		});
 		
+		initLinkTable(linkTable);
+		initClientTable(clientTable);		
+		
+		btnViewVLANs = new Button(this, SWT.NONE);
+		GridData gd_btnViewVLANs = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnViewVLANs.heightHint = 40;
+		gd_btnViewVLANs.widthHint = 90;
+		btnViewVLANs.setLayoutData(gd_btnViewVLANs);
+		btnViewVLANs.setText("View VLANs");
+		
 		btnViewSas = new Button(this, SWT.NONE);
 		btnViewSas.addMouseListener(new MouseAdapter() {
 			@Override
@@ -227,7 +238,7 @@ public class RIQConfigViewer extends Shell {
 		});
 		gd_btnViewSas = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_btnViewSas.heightHint = 40;
-		gd_btnViewSas.widthHint = 80;
+		gd_btnViewSas.widthHint = 90;
 		btnViewSas.setLayoutData(gd_btnViewSas);
 		btnViewSas.setText("View SAs");
 		
@@ -241,12 +252,9 @@ public class RIQConfigViewer extends Shell {
 		});
 		gd_btnBack = new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1);
 		gd_btnBack.heightHint = 40;
-		gd_btnBack.widthHint = 80;
+		gd_btnBack.widthHint = 90;
 		btnBack.setLayoutData(gd_btnBack);
 		btnBack.setText("Back");
-		
-		initLinkTable(linkTable);
-		initClientTable(clientTable);		
 	}
 	
 	public void initLinkTable(Table table) {
@@ -348,14 +356,17 @@ public class RIQConfigViewer extends Shell {
 	}
 
 	public void initClientTableListeners(Table table) {
+		// Open Client (Doesn't Work yet)
 		for(Listener listener : table.getListeners(SWT.MouseDoubleClick)) {
 			table.removeListener(SWT.MouseDoubleClick, listener);
 		}
 		table.addListener(SWT.MouseDoubleClick, new Listener() {
 			public void handleEvent(Event e) {
 				try {
-					System.out.println("View Link "+table.getSelection()[0].getText());
-					Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
+					String link = table.getSelection()[0].getText();
+					if (builder.getLink(link)==null) {System.out.println("\"Clients\" cannot be opened"); return;}
+					System.out.println("View Link "+link);
+					Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(link), true);
 					linkview.open();
 					linkview.layout();
 					while (!linkview.isDisposed()) {
@@ -381,12 +392,14 @@ public class RIQConfigViewer extends Shell {
 					for(int i=0; i < items.length; i++) {
 						items[i].dispose();
 					}
-					// Open Link
+					// Open Client (Doesn't work yet)
 					MenuItem newItem = new MenuItem(menu, SWT.NONE);
 					newItem.setText("Open "+table.getSelection()[0].getText());
 					newItem.addListener(SWT.Selection, new Listener() {
 						public void handleEvent(Event e) {
 							try {
+								String link = table.getSelection()[0].getText();
+								if (builder.getLink(link)==null) {System.out.println("\"Clients\" cannot be opened"); return;}
 								System.out.println("View Link "+table.getSelection()[0].getText());
 								Shell linkview = new LinkConfigViewer(display, builder, builder.getLink(table.getSelection()[0].getText()), true);
 								linkview.open();

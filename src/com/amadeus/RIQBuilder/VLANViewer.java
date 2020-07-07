@@ -2,9 +2,11 @@ package com.amadeus.RIQBuilder;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridData;
@@ -158,7 +160,29 @@ public class VLANViewer extends Shell {
 	}
 	
 	public void initVLANTableListeners(Table table) {
+		for(Listener listener : table.getListeners(SWT.MouseDoubleClick)) {
+			table.removeListener(SWT.MouseDoubleClick, listener);
+		}
 		
+		table.addListener(SWT.MouseDoubleClick, new Listener() {
+			public void handleEvent(Event e) {
+				try {
+					System.out.println("View VLAN "+table.getSelection()[0].getText());
+					/*//View VLAN
+					Shell linkview = new LinkConfigViewer(display, riq, riq.getVLAN(table.getSelection()[0].getText()), true);
+					linkview.open();
+					linkview.layout();
+					while (!linkview.isDisposed()) {
+						if (!display.readAndDispatch()) {
+							display.sleep();
+						}
+					}*/
+					initVLANTable(table);
+				}
+				catch(ArrayIndexOutOfBoundsException exception) {System.out.println("No Selection or Empty Table");}
+				initVLANTable(table);
+			}
+		});
 	}
 
 }
